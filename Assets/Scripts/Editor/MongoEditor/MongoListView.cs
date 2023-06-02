@@ -22,10 +22,9 @@ public class MongoListView : EditorWindow
     private MongoDatabases _mongoDatabases;
     private MongoDatabases.Database.Collection selectedCollection;
     private MongoDatabases.Database selectedDatabase;
-    private Rect[] boxRects;
-    private string[] collectionElementValues;
     private List<string> collectionData;
     Vector2 scrollPosition;
+    private List<string> elements;
 
     [MenuItem("Tool/MongoList Editor")]
     public static void Initialize()
@@ -51,29 +50,12 @@ public class MongoListView : EditorWindow
         if (File.Exists(filePath))
         {
             var jsonContent = File.ReadAllText(filePath);
-            // JSON'u BsonDocument'lere geri dönüştürme
             _mongoDatabases = BsonSerializer.Deserialize<MongoDatabases>(jsonContent);
             selectedDatabase = _mongoDatabases.databases[0];
             selectedCollection = selectedDatabase.collections[0];
-            collectionElementValues = new string[selectedCollection.elements[0].ElementCount];
         }
         else
             Debug.Log("Json File Does Not Exist" + filePath);
-
-
-        float width = 150;
-        float height = 150;
-        float spacing = 10;
-        float startX = 10;
-        float startY = 10;
-        boxRects = new Rect[selectedCollection.elements.Count];
-
-        for (int i = 0; i < boxRects.Length; i++)
-        {
-            float x = startX + (width + spacing) * i;
-            float y = startY + (height + spacing) * i;
-            boxRects[i] = new Rect(x, y, width, height);
-        }
     }
     private void OnGUI()
     {
@@ -137,14 +119,10 @@ public class MongoListView : EditorWindow
             GUILayout.Box("ITEM " + itemIndex);
             GUI.color = previousColor;
             //int collectionDataIndex=0;
-
             foreach (var collectionElement in collection.Values)
             {
                 string value = collectionElement.ToString();
                 value = EditorGUILayout.TextField(value);
-                //collectionData.Add(value);
-                //collectionData[collectionDataIndex] = EditorGUILayout.TextField(collectionData[collectionDataIndex]);
-                //collectionDataIndex++;
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -154,6 +132,12 @@ public class MongoListView : EditorWindow
             {
                 Debug.Log(collection["_id"]);
                 //TODO: UPDATE JSON
+            }
+            
+            GUI.color = Color.yellow;
+            if (GUILayout.Button("<->", GUILayout.Width(30), GUILayout.Height(30)))
+            {
+                //TODO: Reset Element Value JSON
             }
             GUI.color = Color.red;
 
