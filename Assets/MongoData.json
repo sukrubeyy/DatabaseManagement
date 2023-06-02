@@ -1,0 +1,50 @@
+{
+  "connectionUrl": "mongodb+srv://Victory:7Aynras2-@gameserver.ptrocqn.mongodb.net/?retryWrites=true&w=majority",
+  "databases": [
+    {
+      "name": "Users",
+      "collections": [
+        {
+          "name": "userInfo",
+          "elements": [
+            {
+              "_id": ObjectId(
+              "643be928dd6d1908b83b9b86"
+              ),
+              "user_id": 10,
+              "e_mail": "mongouser@gmail.com",
+              "name": "Sukru",
+              "Surname": "Cay"
+            },
+            {
+              "_id": ObjectId(
+              "644e6413dd6d197780968807"
+              ),
+              "user_id": 10,
+              "e_mail": "mongouser@gmail.com",
+              "name": "Sukru",
+              "Surname": "Cay"
+            }
+          ]
+        },
+        {
+          "name": "userItems",
+          "elements": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "collections": []
+    },
+    {
+      "name": "local",
+      "collections": [
+        {
+          "name": "oplog.rs",
+          "elements": []
+        }
+      ]
+    }
+  ]
+}
