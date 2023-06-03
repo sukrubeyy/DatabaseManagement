@@ -20,10 +20,10 @@
               "_id": ObjectId(
               "644e6413dd6d197780968807"
               ),
-              "user_id": 10,
-              "e_mail": "mongouser@gmail.com",
-              "name": "Sukru",
-              "Surname": "Cay"
+              "user_id": 102,
+              "e_mail": "ramazan@gmail.com",
+              "name": "ramo",
+              "Surname": "alt"
             }
           ]
         },
