@@ -48,10 +48,10 @@ public class MongoListView : EditorWindow
 
     public void PrepareData()
     {
-        //Tüm Json içindeki dataları burdan çek.
-        string filePath = Path.Combine(Application.dataPath, "MongoData.json");
         elements = new();
         PreviousTextInput = new();
+        //Tüm Json içindeki dataları burdan çek.
+        string filePath = Path.Combine(Application.dataPath, "MongoData.json");
         if (File.Exists(filePath))
         {
             var jsonContent = File.ReadAllText(filePath);
@@ -162,17 +162,17 @@ public class MongoListView : EditorWindow
         Color previousColor = GUI.color;
 
         int itemIndex = 1;
-        int collectionDataIndex = 0;
         foreach (var collection in selectedCollection.elements)
         {
             GUI.color = Color.yellow;
             GUILayout.Box("ITEM " + itemIndex);
             GUI.color = previousColor;
-            
+            var elements2 = PreviousTextInput.FirstOrDefault(e => e.Key == collection["_id"].ToString()).Value;
+            int collectionDataIndex = 0;
             foreach (var collectionElement in collection.Values)
             {
                 if(collectionElement != collection["_id"])
-                    elements[collectionDataIndex] = EditorGUILayout.TextField(elements[collectionDataIndex]);
+                    elements2[collectionDataIndex] = EditorGUILayout.TextField(elements2[collectionDataIndex]);
                 collectionDataIndex++;
             }
 
@@ -189,8 +189,11 @@ public class MongoListView : EditorWindow
                     {
                         if (previousElementsValue.Contains(item))
                         {
+                            _mongoDatabases.databases.Find(e => e == selectedDatabase).
+                                collections.Find(e => e == selectedCollection).Update(objectID,previousElementsValue);
+                           
                             //TODO: UPDATE JSON
-                            Debug.Log(item);
+                           // Debug.Log(item);
                         }
                     }
                 }
