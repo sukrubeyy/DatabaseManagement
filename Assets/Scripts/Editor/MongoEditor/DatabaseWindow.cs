@@ -71,7 +71,6 @@ public class DatabaseWindow : EditorWindow
             if (GUILayout.Button("Connect"))
             {
                 CreateMongoSO();
-                // MongoListView.Initialize();
             }
         }
         GUILayout.EndVertical();

@@ -162,6 +162,11 @@ public class MongoListView : EditorWindow
         Color previousColor = GUI.color;
 
         int itemIndex = 1;
+
+        if (GUILayout.Button("Add Collection Item"))
+        {
+            AddElementEditor.Initialize();
+        }
         foreach (var collection in selectedCollection.elements)
         {
             GUI.color = Color.yellow;
@@ -171,7 +176,7 @@ public class MongoListView : EditorWindow
             int collectionDataIndex = 0;
             foreach (var collectionElement in collection.Values)
             {
-                if(collectionElement != collection["_id"])
+                if (collectionElement != collection["_id"])
                     elements2[collectionDataIndex] = EditorGUILayout.TextField(elements2[collectionDataIndex]);
                 collectionDataIndex++;
             }
@@ -184,31 +189,23 @@ public class MongoListView : EditorWindow
                 var objectID = collection["_id"].ToString();
                 var previousElementsValue = PreviousTextInput.FirstOrDefault(e => e.Key == objectID).Value;
                 foreach (var item in elements)
-                {
                     if (item != objectID)
-                    {
                         if (previousElementsValue.Contains(item))
-                        {
-                            _mongoDatabases.databases.Find(e => e == selectedDatabase).
-                                collections.Find(e => e == selectedCollection).Update(objectID,previousElementsValue);
-                           
-                            //TODO: UPDATE JSON
-                           // Debug.Log(item);
-                        }
-                    }
-                }
+                            _mongoDatabases.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
+
+                PrepareData();
             }
 
             GUI.color = Color.yellow;
             if (GUILayout.Button("<->", GUILayout.Width(30), GUILayout.Height(30)))
-            {
                 PrepareData();
-            }
 
             GUI.color = Color.red;
             if (GUILayout.Button("X", GUILayout.Width(30), GUILayout.Height(30)))
             {
-                //Delete JSON
+                var objectID = collection["_id"].ToString();
+                _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
+                PrepareData();
             }
             EditorGUILayout.EndHorizontal();
             itemIndex++;
