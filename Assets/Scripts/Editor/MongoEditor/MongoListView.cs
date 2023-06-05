@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Extentions;
 using Mongo;
 using MongoDB.Bson;
@@ -22,12 +23,12 @@ public class MongoListView : EditorWindow
     private MongoDatabases _mongoDatabases;
     private MongoDatabases.Database.Collection selectedCollection;
     private MongoDatabases.Database selectedDatabase;
-    private Rect[] boxRects;
-    private string[] collectionElementValues;
     private List<string> collectionData;
     Vector2 scrollPosition;
+    private List<string> elements;
+    private Dictionary<string, List<string>> PreviousTextInput;
 
-    [MenuItem("Tool/MongoList Editor")]
+    [MenuItem("Database Management/MongoList Editor")]
     public static void Initialize()
     {
         _init = true;
@@ -35,6 +36,7 @@ public class MongoListView : EditorWindow
         Window.PrepareData();
         Window.Show();
     }
+
     private void OnFocus()
     {
         if (Window != null || _init)
@@ -43,44 +45,58 @@ public class MongoListView : EditorWindow
         Window = GetWindow<MongoListView>();
         Window.PrepareData();
     }
+
     public void PrepareData()
     {
+        elements = new();
+        PreviousTextInput = new();
         //Tüm Json içindeki dataları burdan çek.
         string filePath = Path.Combine(Application.dataPath, "MongoData.json");
-
         if (File.Exists(filePath))
         {
             var jsonContent = File.ReadAllText(filePath);
-            // JSON'u BsonDocument'lere geri dönüştürme
             _mongoDatabases = BsonSerializer.Deserialize<MongoDatabases>(jsonContent);
             selectedDatabase = _mongoDatabases.databases[0];
             selectedCollection = selectedDatabase.collections[0];
-            collectionElementValues = new string[selectedCollection.elements[0].ElementCount];
+            PrepareElementList(selectedCollection);
         }
         else
             Debug.Log("Json File Does Not Exist" + filePath);
+    }
 
+    private void PrepareElementList(MongoDatabases.Database.Collection collection)
+    {
+        PreviousTextInput.Clear();
+        elements.Clear();
 
-        float width = 150;
-        float height = 150;
-        float spacing = 10;
-        float startX = 10;
-        float startY = 10;
-        boxRects = new Rect[selectedCollection.elements.Count];
-
-        for (int i = 0; i < boxRects.Length; i++)
+        foreach (var bsonValue in collection.elements)
         {
-            float x = startX + (width + spacing) * i;
-            float y = startY + (height + spacing) * i;
-            boxRects[i] = new Rect(x, y, width, height);
+            foreach (var item in bsonValue.Values)
+            {
+                elements.Add(item.ToString());
+            }
+        }
+
+        foreach (var element in collection.elements)
+        {
+            List<string> elementString = new List<string>();
+            foreach (var itemValue in element.Values)
+            {
+                if (element["_id"].ToString() != itemValue)
+                    elementString.Add(itemValue.ToString());
+            }
+
+            PreviousTextInput.Add(element["_id"].ToString(), elementString);
         }
     }
+
     private void OnGUI()
     {
         if (_mongoDatabases == null)
             return;
 
         #region Window Style
+
         float padding = 10f;
         float lineWidth = 2f;
 
@@ -92,38 +108,54 @@ public class MongoListView : EditorWindow
         DrawVerticalLine(mainRect.yMax, lineWidth);
         DrawVerticalLine(rect1.yMax, lineWidth);
         DrawVerticalLine(rect2.yMax, lineWidth);
-        
+
         #endregion
+
         #region Save Operations
+
         GUILayout.BeginArea(mainRect);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Save"))
         {
-
         }
+
         if (GUILayout.Button("Reset"))
         {
-
+            PrepareData();
         }
+
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+
         #endregion
+
         #region Choose Database
+
         GUILayout.BeginArea(rect1);
         foreach (var database in _mongoDatabases.databases)
             if (GUILayout.Button(database.name))
                 selectedDatabase = database;
         GUILayout.EndArea();
+
         #endregion
+
         #region Choose Collection
+
         GUILayout.BeginArea(rect2);
         foreach (var collection in selectedDatabase.collections)
             if (GUILayout.Button(collection.name))
+            {
                 selectedCollection = collection;
+                elements.Clear();
+                PrepareElementList(selectedCollection);
+            }
+
         GUILayout.EndArea();
+
         #endregion
 
         #region List Items
+
         GUILayout.BeginArea(rect3);
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(position.width), GUILayout.Height(150f));
 
@@ -131,20 +163,22 @@ public class MongoListView : EditorWindow
 
         int itemIndex = 1;
 
+        if (GUILayout.Button("Add Collection Item"))
+        {
+            AddElementEditor.Initialize(selectedDatabase,selectedCollection);
+        }
         foreach (var collection in selectedCollection.elements)
         {
             GUI.color = Color.yellow;
             GUILayout.Box("ITEM " + itemIndex);
             GUI.color = previousColor;
-            //int collectionDataIndex=0;
-
+            var elements2 = PreviousTextInput.FirstOrDefault(e => e.Key == collection["_id"].ToString()).Value;
+            int collectionDataIndex = 0;
             foreach (var collectionElement in collection.Values)
             {
-                string value = collectionElement.ToString();
-                value = EditorGUILayout.TextField(value);
-                //collectionData.Add(value);
-                //collectionData[collectionDataIndex] = EditorGUILayout.TextField(collectionData[collectionDataIndex]);
-                //collectionDataIndex++;
+                if (collectionElement != collection["_id"])
+                    elements2[collectionDataIndex] = EditorGUILayout.TextField(elements2[collectionDataIndex]);
+                collectionDataIndex++;
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -152,17 +186,29 @@ public class MongoListView : EditorWindow
             GUI.color = Color.green;
             if (GUILayout.Button("✓", GUILayout.Width(30), GUILayout.Height(30)))
             {
-                Debug.Log(collection["_id"]);
-                //TODO: UPDATE JSON
-            }
-            GUI.color = Color.red;
+                var objectID = collection["_id"].ToString();
+                var previousElementsValue = PreviousTextInput.FirstOrDefault(e => e.Key == objectID).Value;
+                foreach (var item in elements)
+                    if (item != objectID)
+                        if (previousElementsValue.Contains(item))
+                            _mongoDatabases.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
 
+                PrepareData();
+            }
+
+            GUI.color = Color.yellow;
+            if (GUILayout.Button("<->", GUILayout.Width(30), GUILayout.Height(30)))
+                PrepareData();
+
+            GUI.color = Color.red;
             if (GUILayout.Button("X", GUILayout.Width(30), GUILayout.Height(30)))
             {
-                //Delete JSON
+                var objectID = collection["_id"].ToString();
+                _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
+                PrepareData();
             }
-
             EditorGUILayout.EndHorizontal();
+            itemIndex++;
         }
 
         GUI.color = previousColor;
@@ -172,7 +218,6 @@ public class MongoListView : EditorWindow
         GUILayout.EndArea();
 
         #endregion
-
     }
 
     public Color GetRandomColor()
@@ -182,5 +227,6 @@ public class MongoListView : EditorWindow
         float b = UnityEngine.Random.Range(0f, 1f);
         return new Color(r, g, b);
     }
+
     private void DrawVerticalLine(float yPos, float width) => EditorGUI.DrawRect(new Rect(0, yPos, position.width, width), Color.black);
 }

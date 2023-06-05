@@ -24,7 +24,7 @@ public class DatabaseWindow : EditorWindow
     private SerializedProperty soConnectionUrl;
 
 
-    [MenuItem("Tool/Database Connection")]
+    [MenuItem("Database Management/Database Connection")]
     public static void ShowWindow()
     {
         isInit = true;
@@ -71,7 +71,6 @@ public class DatabaseWindow : EditorWindow
             if (GUILayout.Button("Connect"))
             {
                 CreateMongoSO();
-                // MongoListView.Initialize();
             }
         }
         GUILayout.EndVertical();
