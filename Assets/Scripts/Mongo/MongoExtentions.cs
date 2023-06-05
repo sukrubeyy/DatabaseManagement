@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Mongo;
@@ -130,6 +131,7 @@ public static class MongoExtentions
     }
 
     public static bool IsExistJson(string jsonName) => File.Exists(Path.Combine(Application.dataPath, jsonName));
+
     public static void CreateCloudDataToJson(string connectionUrl)
     {
         MongoClient client = new MongoClient(connectionUrl);
@@ -158,6 +160,55 @@ public static class MongoExtentions
         mongoDatabase.databases = myDatabases;
         string json = mongoDatabase.ToJson();
         System.IO.File.WriteAllText("Assets/MongoData.json", json);
+    }
+
+    public static void SendJsonToCloud()
+    {
+        string jsonName = "MongoData.json";
+
+        if (IsExistJson(jsonName))
+        {
+            string json = GetJsonFile(jsonName);
+            MongoDatabases mongoDatabases = SerializeMongoDatabases();
+
+            var connectionString = mongoDatabases.connectionUrl;
+            var client = new MongoClient(connectionString);
+
+            foreach (var database in mongoDatabases.databases)
+            {
+                var cloudDatabase = client.GetDatabase(database.name);
+                foreach (var collection in database.collections)
+                {
+                    var cloudCollection = cloudDatabase.GetCollection<BsonDocument>(collection.name);
+
+                    foreach (var BsonElement in collection.elements)
+                    {
+                        var filter = Builders<BsonDocument>.Filter.Eq("_id", BsonElement["_id"]);
+                        
+                        //TODO: CHECK Cloud
+                        // 1) Eğer Bende ve cloud'ta varsa güncelle
+                        // 2) Eğer Cloud'ta yok bende varsa Cloud'a ekle
+                        // 3) Eğer Clous'ta var bende yoksa Cloud'tan sil
+                        
+                        //Cloud'ta yoksa oluştur
+                        if (cloudCollection.Find(filter).FirstOrDefault() is null)
+                        {
+                            cloudCollection.InsertOne(BsonElement);
+                        }
+                        else
+                        {
+                            cloudCollection.ReplaceOne(filter,BsonElement);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static bool IsExistElement(IMongoCollection<BsonDocument> cloudCollection)
+    {
+
+        return true;
     }
 
     #endregion

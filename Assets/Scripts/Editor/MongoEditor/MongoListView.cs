@@ -76,7 +76,6 @@ public class MongoListView : EditorWindow
                 if (element["_id"].ToString() != itemValue)
                     elementString.Add(itemValue.ToString());
             }
-
             PreviousTextInput.Add(element["_id"].ToString(), elementString);
         }
     }
@@ -108,6 +107,7 @@ public class MongoListView : EditorWindow
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Send Json TO Cloud"))
         {
+            MongoExtentions.SendJsonToCloud();
             //TODO: Send Json To Cloud
         }
 

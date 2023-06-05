@@ -56,9 +56,9 @@ namespace Mongo
             {
                 if (item2.elements.Contains(targetJsonObject))
                 {
-                    item2.elements[item2Count] = newJsonObject;
-                    // item2.elements.Remove(targetJsonObject);
-                    // item2.elements.Add(newJsonObject);
+                    //item2.elements[item2Count] = newJsonObject;
+                    item2.elements.Remove(targetJsonObject);
+                    item2.elements.Add(newJsonObject);
                 }
 
                 item2Count++;
