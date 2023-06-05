@@ -28,7 +28,7 @@ public class MongoListView : EditorWindow
     private List<string> elements;
     private Dictionary<string, List<string>> PreviousTextInput;
 
-    [MenuItem("Tool/MongoList Editor")]
+    [MenuItem("Database Management/MongoList Editor")]
     public static void Initialize()
     {
         _init = true;
@@ -165,7 +165,7 @@ public class MongoListView : EditorWindow
 
         if (GUILayout.Button("Add Collection Item"))
         {
-            AddElementEditor.Initialize();
+            AddElementEditor.Initialize(selectedDatabase,selectedCollection);
         }
         foreach (var collection in selectedCollection.elements)
         {
