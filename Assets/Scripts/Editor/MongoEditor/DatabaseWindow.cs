@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Extentions;
 using Mongo;
 using MongoDB.Driver;
 using UnityEditor;
@@ -70,40 +69,10 @@ public class DatabaseWindow : EditorWindow
 
             if (GUILayout.Button("Connect"))
             {
-                CreateMongoSO();
+                MongoExtentions.CreateCloudDataToJson(connectionUrl);
             }
         }
         GUILayout.EndVertical();
-    }
-
-    private void CreateMongoSO()
-    {
-        MongoClient client = new MongoClient(connectionUrl);
-
-        var databases = client.GetAllDatabases().ToList();
-
-        MongoDatabases mongoDatabase = new();
-        mongoDatabase.connectionUrl = connectionUrl;
-        
-        List<MongoDatabases.Database> myDatabases = new();
-        foreach (var database in databases)
-        {
-            MongoDatabases.Database data = new MongoDatabases.Database();
-            data.name = database["name"].AsString;
-            foreach (var collection in client.GetAllCollections(database))
-            {
-                data.collections.Add(new MongoDatabases.Database.Collection()
-                {
-                    name = collection["name"].AsString,
-                    elements = client.GetDatabase(database["name"].AsString).GetCollectionAllValue(collection["name"].AsString)
-                });
-            }
-            myDatabases.Add(data);
-        }
-
-        mongoDatabase.databases = myDatabases;
-        string json = mongoDatabase.ToJson();
-        System.IO.File.WriteAllText("Assets/MongoData.json", json);
     }
 }
 #endif

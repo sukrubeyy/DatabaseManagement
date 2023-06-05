@@ -45,11 +45,7 @@ public class AddElementEditor : EditorWindow
     private void PrepareData()
     {
         inputValues = new();
-        if (IsExistJson("MongoData.json"))
-        {
-            string json = GetJsonFile("MongoData.json");
-            mongoDaatabases = BsonSerializer.Deserialize<MongoDatabases>(json);
-
+            mongoDaatabases = MongoExtentions.SerializeMongoDatabases();
             foreach (var database in mongoDaatabases.databases)
             {
                 if (database.name == EditorPrefs.GetString("selectedDatabase"))
@@ -64,7 +60,6 @@ public class AddElementEditor : EditorWindow
                     }
                 }
             }
-        }
     }
 
     private void ClearPrefs() => EditorPrefs.DeleteAll();
@@ -109,20 +104,4 @@ public class AddElementEditor : EditorWindow
             inputValues.Add("");
         }
     }
-
-    private void SaveJson(string filePath, string json) => System.IO.File.WriteAllText(filePath, json);
-
-    private string GetJsonFile(string jsonName)
-    {
-        string filePath = Path.Combine(Application.dataPath, jsonName);
-        if (File.Exists(filePath))
-        {
-            var jsonContent = File.ReadAllText(filePath);
-            return jsonContent;
-        }
-
-        return null;
-    }
-
-    private bool IsExistJson(string jsonName) => File.Exists(Path.Combine(Application.dataPath, jsonName));
 }

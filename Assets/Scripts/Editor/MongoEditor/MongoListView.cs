@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Extentions;
 using Mongo;
 using MongoDB.Bson;
 using UnityEditor;
@@ -11,7 +10,6 @@ using UnityEngine;
 using UnityEngine.Purchasing.MiniJSON;
 using Newtonsoft.Json;
 using MongoDB.Bson.Serialization;
-
 public class MongoListView : EditorWindow
 {
     private static MongoListView Window;
@@ -51,17 +49,10 @@ public class MongoListView : EditorWindow
         elements = new();
         PreviousTextInput = new();
         //Tüm Json içindeki dataları burdan çek.
-        string filePath = Path.Combine(Application.dataPath, "MongoData.json");
-        if (File.Exists(filePath))
-        {
-            var jsonContent = File.ReadAllText(filePath);
-            _mongoDatabases = BsonSerializer.Deserialize<MongoDatabases>(jsonContent);
-            selectedDatabase = _mongoDatabases.databases[0];
-            selectedCollection = selectedDatabase.collections[0];
-            PrepareElementList(selectedCollection);
-        }
-        else
-            Debug.Log("Json File Does Not Exist" + filePath);
+        _mongoDatabases = MongoExtentions.SerializeMongoDatabases();
+        selectedDatabase = _mongoDatabases.databases[0];
+        selectedCollection = selectedDatabase.collections[0];
+        PrepareElementList(selectedCollection);
     }
 
     private void PrepareElementList(MongoDatabases.Database.Collection collection)
@@ -115,14 +106,13 @@ public class MongoListView : EditorWindow
 
         GUILayout.BeginArea(mainRect);
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Save"))
+        if (GUILayout.Button("Send Json TO Cloud"))
         {
+            //TODO: Send Json To Cloud
         }
 
         if (GUILayout.Button("Reset"))
-        {
             PrepareData();
-        }
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
@@ -164,9 +154,8 @@ public class MongoListView : EditorWindow
         int itemIndex = 1;
 
         if (GUILayout.Button("Add Collection Item"))
-        {
-            AddElementEditor.Initialize(selectedDatabase,selectedCollection);
-        }
+            AddElementEditor.Initialize(selectedDatabase, selectedCollection);
+
         foreach (var collection in selectedCollection.elements)
         {
             GUI.color = Color.yellow;
@@ -198,7 +187,10 @@ public class MongoListView : EditorWindow
 
             GUI.color = Color.yellow;
             if (GUILayout.Button("<->", GUILayout.Width(30), GUILayout.Height(30)))
+            {
                 PrepareData();
+                GUI.FocusControl(null);
+            }
 
             GUI.color = Color.red;
             if (GUILayout.Button("X", GUILayout.Width(30), GUILayout.Height(30)))
@@ -207,6 +199,7 @@ public class MongoListView : EditorWindow
                 _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
                 PrepareData();
             }
+
             EditorGUILayout.EndHorizontal();
             itemIndex++;
         }
@@ -218,14 +211,6 @@ public class MongoListView : EditorWindow
         GUILayout.EndArea();
 
         #endregion
-    }
-
-    public Color GetRandomColor()
-    {
-        float r = UnityEngine.Random.Range(0f, 1f);
-        float g = UnityEngine.Random.Range(0f, 1f);
-        float b = UnityEngine.Random.Range(0f, 1f);
-        return new Color(r, g, b);
     }
 
     private void DrawVerticalLine(float yPos, float width) => EditorGUI.DrawRect(new Rect(0, yPos, position.width, width), Color.black);
