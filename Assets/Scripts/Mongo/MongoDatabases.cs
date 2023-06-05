@@ -55,14 +55,19 @@ namespace Mongo
                     .FirstOrDefault(e => e["_id"].ToString() == objectID.ToString());
 
                 newJsonObject["_id"] = new BsonObjectId(objectID.ToString());
-
+                int item2Count = 0;
                 foreach (var item in newJson.databases)
-                    foreach (var item2 in item.collections)
-                        if (item2.elements.Contains(targetJsonObject))
-                        {
-                            item2.elements.Remove(targetJsonObject);
-                            item2.elements.Add(newJsonObject);
-                        }
+                foreach (var item2 in item.collections)
+                {
+                    if (item2.elements.Contains(targetJsonObject))
+                    {
+                        item2.elements[item2Count] = newJsonObject;
+                        // item2.elements.Remove(targetJsonObject);
+                        // item2.elements.Add(newJsonObject);
+                    }
+
+                    item2Count++;
+                }
                 SaveJson(Path.Combine(Application.dataPath, "MongoData.json"), newJson.ToJson());
             }
         }

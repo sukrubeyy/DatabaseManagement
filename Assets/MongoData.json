@@ -11,10 +11,10 @@
               "_id": ObjectId(
               "644e6413dd6d197780968807"
               ),
-              "user_id": 10,
+              "user_id": "103",
               "e_mail": "mongouser@gmail.com",
-              "name": "Sukru",
-              "Surname": "Cay"
+              "name": "Sukru2",
+              "Surname": "Cay3"
             },
             {
               "_id": ObjectId(
