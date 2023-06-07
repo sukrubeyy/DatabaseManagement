@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.Purchasing.MiniJSON;
 using Newtonsoft.Json;
 using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+
 public class MongoListView : EditorWindow
 {
     private static MongoListView Window;
@@ -198,6 +200,7 @@ public class MongoListView : EditorWindow
                 var objectID = collection["_id"].ToString();
                 _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
                 PrepareData();
+                
             }
 
             EditorGUILayout.EndHorizontal();

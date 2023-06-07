@@ -80,7 +80,6 @@ namespace Mongo
                     item2.elements.Remove(targetJsonObject);
                 }
 
-
             MongoExtentions.SaveJson(Path.Combine(Application.dataPath, "MongoData.json"), newJson.ToJson());
         }
 

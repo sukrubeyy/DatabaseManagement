@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Mongo;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -46,7 +47,7 @@ public static class MongoExtentions
         mongo.GetCollection<BsonDocument>("userInfo").UpdateMany(filter, filter2);
     }
 
-    public static void Delete(this IMongoDatabase mongo, string collectionName, string id, int searchValue)
+    public static void Delete(this IMongoDatabase mongo, string collectionName, string id, string searchValue)
     {
         //DELETE
         var filter3 = Builders<BsonDocument>.Filter.Eq(id, searchValue);
@@ -68,11 +69,11 @@ public static class MongoExtentions
         return client.ListDatabases();
     }
 
-    public static MongoClient ConnectionAccount(this MongoClient _client, string url)
+    public static MongoClient ConnectionAccount(string url)
     {
         if (!string.IsNullOrEmpty(url))
         {
-            _client = new MongoClient(url);
+            MongoClient _client = new MongoClient(url);
             if (_client != null)
             {
                 Debug.Log("Connection MongoDB Successfuly");
@@ -180,26 +181,50 @@ public static class MongoExtentions
                 foreach (var collection in database.collections)
                 {
                     var cloudCollection = cloudDatabase.GetCollection<BsonDocument>(collection.name);
-
+                    var remoteCollection = cloudDatabase.GetCollectionAllValue(collection.name);
+                    
+                    IsExistCloud(remoteCollection,collection.elements);
+                    
+                    
                     foreach (var BsonElement in collection.elements)
                     {
                         var filter = Builders<BsonDocument>.Filter.Eq("_id", BsonElement["_id"]);
-                        
-                        //TODO: CHECK Cloud
-                        // 1) Eğer Bende ve cloud'ta varsa güncelle
-                        // 2) Eğer Cloud'ta yok bende varsa Cloud'a ekle
-                        // 3) Eğer Clous'ta var bende yoksa Cloud'tan sil
-                        
-                        //Cloud'ta yoksa oluştur
+
                         if (cloudCollection.Find(filter).FirstOrDefault() is null)
                         {
                             cloudCollection.InsertOne(BsonElement);
                         }
-                        else
+                        else 
                         {
-                            cloudCollection.ReplaceOne(filter,BsonElement);
+                                //Cloud'ta var ama yerel'de yok -> delete
+                                cloudCollection.ReplaceOne(filter,BsonElement);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private static void IsExistCloud(List<BsonDocument> remoteCollection,List<BsonDocument> localCollection)
+    {
+        foreach (var remotedoc in remoteCollection)
+        {
+            foreach (var localdoc in localCollection)
+            {
+                if (remoteCollection.Contains(localdoc))
+                {
+                    //TODO: Guncelle
+                    Debug.Log("GUNCELLE");
+                }
+                 if (!remoteCollection.Contains(localdoc))
+                {
+                    //TODO: Ekle
+                    Debug.Log("Ekle");
+                }
+                 if (!localCollection.Contains(remotedoc))
+                {
+                    //TODO: Sil
+                    Debug.Log("Sil");
                 }
             }
         }
@@ -212,4 +237,5 @@ public static class MongoExtentions
     }
 
     #endregion
+
 }
