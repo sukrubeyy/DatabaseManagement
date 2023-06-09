@@ -34,13 +34,7 @@ namespace Mongo
 
         public void Update(Database _database, Collection _collection, BsonValue objectID, List<string> newValue)
         {
-
             var foundValues = _database.collections.FirstOrDefault(e => e.name == _collection.name).elements.Find(e => e["_id"].ToString() == objectID.ToString());
-
-            foreach (var deneme in newValue)
-            {
-                Debug.Log("Update MEth:    "+deneme);
-            }
           
             BsonDocument newJsonObject = new BsonDocument();
             int indexCount = 0;

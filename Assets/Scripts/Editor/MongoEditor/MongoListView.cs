@@ -93,14 +93,21 @@ public class MongoListView : EditorWindow
         float padding = 10f;
         float lineWidth = 2f;
 
+        // mainRect = new Rect(0, 0, position.width, 30);
+        // rect1 = new Rect(0, mainRect.yMax + padding, position.width, (position.height - padding * 2) / 3);
+        // rect2 = new Rect(0, rect1.yMax + padding, position.width, (position.height - padding * 2) / 3);
+        // rect3 = new Rect(0, rect2.yMax + padding, position.width, (position.height - padding * 2) / 3);
+        
         mainRect = new Rect(0, 0, position.width, 30);
-        rect1 = new Rect(0, mainRect.yMax + padding, position.width, (position.height - padding * 2) / 3);
-        rect2 = new Rect(0, rect1.yMax + padding, position.width, (position.height - padding * 2) / 3);
-        rect3 = new Rect(0, rect2.yMax + padding, position.width, (position.height - padding * 2) / 3);
+        rect1 = new Rect(0, mainRect.yMax + padding, (position.width - padding * 4) / 3, position.height - mainRect.yMax - padding * 2);
+        rect2 = new Rect(rect1.xMax + padding, mainRect.yMax + padding, (position.width - padding * 4) / 3, position.height - mainRect.yMax - padding * 2);
+        rect3 = new Rect(rect2.xMax + padding, mainRect.yMax + padding, (position.width - padding * 4) / 3, position.height - mainRect.yMax - padding * 2);
 
-        DrawVerticalLine(mainRect.yMax, lineWidth);
-        DrawVerticalLine(rect1.yMax, lineWidth);
-        DrawVerticalLine(rect2.yMax, lineWidth);
+         DrawVerticalLine(mainRect.yMax, lineWidth);
+         DrawHorizontalLine(rect1.xMax, lineWidth);
+         DrawHorizontalLine(rect2.xMax, lineWidth);
+        // DrawVerticalLine(rect1.yMax, lineWidth);
+        // DrawVerticalLine(rect2.yMax, lineWidth);
 
         #endregion
 
@@ -150,13 +157,13 @@ public class MongoListView : EditorWindow
         #region List Items
 
         GUILayout.BeginArea(rect3);
-        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(position.width), GUILayout.Height(150f));
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(rect3.width), GUILayout.Height(rect3.height));
 
         Color previousColor = GUI.color;
 
         int itemIndex = 1;
 
-        if (GUILayout.Button("Add Collection Item"))
+        if (GUILayout.Button("Add",GUILayout.Width(rect3.width)))
             AddElementEditor.Initialize(selectedDatabase, selectedCollection);
 
         foreach (var collection in selectedCollection.elements)
@@ -207,6 +214,7 @@ public class MongoListView : EditorWindow
 
             EditorGUILayout.EndHorizontal();
             itemIndex++;
+            
         }
 
         GUI.color = previousColor;
@@ -217,6 +225,6 @@ public class MongoListView : EditorWindow
 
         #endregion
     }
-
+    private void DrawHorizontalLine(float xPos, float height) => EditorGUI.DrawRect(new Rect(xPos, 30, height, position.height), Color.black);
     private void DrawVerticalLine(float yPos, float width) => EditorGUI.DrawRect(new Rect(0, yPos, position.width, width), Color.black);
 }
