@@ -50,6 +50,7 @@ public class MongoListView : EditorWindow
     {
         elements = new();
         PreviousTextInput = new();
+        
         //Tüm Json içindeki dataları burdan çek.
         _mongoDatabases = MongoExtentions.SerializeMongoDatabases();
         selectedDatabase = _mongoDatabases.databases[0];
@@ -106,19 +107,17 @@ public class MongoListView : EditorWindow
         #region Save Operations
 
         GUILayout.BeginArea(mainRect);
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Send Json TO Cloud"))
-        {
-            MongoExtentions.SendJsonToCloud();
-            //TODO: Send Json To Cloud
-        }
+            GUILayout.BeginHorizontal();
+            {
+            if (GUILayout.Button("Send Json to Cloud"))
+                MongoExtentions.SendJsonToCloud();
 
-        if (GUILayout.Button("Reset"))
-        {
-            PrepareData();
-        }
-
-        GUILayout.EndHorizontal();
+            if (GUILayout.Button("Reset"))
+                PrepareData();
+            if(GUILayout.Button("Uptade Json File"))
+                MongoExtentions.CreateCloudDataToJson(_mongoDatabases.connectionUrl);
+            }
+            GUILayout.EndHorizontal();
         GUILayout.EndArea();
 
         #endregion
@@ -181,17 +180,13 @@ public class MongoListView : EditorWindow
             {
                 var objectID = collection["_id"].ToString();
                 var previousElementsValue = PreviousTextInput.FirstOrDefault(e => e.Key == objectID).Value;
+                
                 foreach (var item in elements)
                     if (item != objectID)
-                        if (previousElementsValue.Contains(item))
                             _mongoDatabases.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
 
-                // string filePath = Path.Combine(Application.dataPath, "MongoData.json");
-                // string json = MongoExtentions.GetJsonFile("MongoData.json");
-                // json = _mongoDatabases.ToJson();
-                // MongoExtentions.SaveJson(filePath,json);
-                
-                PrepareData();
+                //PrepareData();
+                GUI.FocusControl(null);
             }
 
             GUI.color = Color.yellow;
@@ -206,8 +201,6 @@ public class MongoListView : EditorWindow
             {
                 var objectID = collection["_id"].ToString();
                 _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
-                // string filePath = Path.Combine(Application.dataPath, "MongoData.json");
-                // MongoExtentions.SaveJson(filePath,_mongoDatabases.ToJson());
                 PrepareData();
                 
             }

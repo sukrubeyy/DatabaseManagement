@@ -34,8 +34,14 @@ namespace Mongo
 
         public void Update(Database _database, Collection _collection, BsonValue objectID, List<string> newValue)
         {
+
             var foundValues = _database.collections.FirstOrDefault(e => e.name == _collection.name).elements.Find(e => e["_id"].ToString() == objectID.ToString());
 
+            foreach (var deneme in newValue)
+            {
+                Debug.Log("Update MEth:    "+deneme);
+            }
+          
             BsonDocument newJsonObject = new BsonDocument();
             int indexCount = 0;
             foreach (var newElement in foundValues)
@@ -56,9 +62,9 @@ namespace Mongo
             {
                 if (item2.elements.Contains(targetJsonObject))
                 {
-                      item2.elements[item2Count] = newJsonObject;
-                     //item2.elements.Remove(targetJsonObject);
-                     //item2.elements.Add(newJsonObject);
+                     //item2.elements[item2Count] = newJsonObject;
+                     item2.elements.Remove(targetJsonObject);
+                     item2.elements.Add(newJsonObject);
                 }
 
                 item2Count++;
