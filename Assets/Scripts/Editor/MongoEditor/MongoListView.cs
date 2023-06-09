@@ -59,8 +59,8 @@ public class MongoListView : EditorWindow
 
     private void PrepareElementList(MongoDatabases.Database.Collection collection)
     {
-        PreviousTextInput.Clear();
-        elements.Clear();
+       elements.Clear();
+       PreviousTextInput.Clear();
 
         foreach (var bsonValue in collection.elements)
         {
@@ -114,7 +114,9 @@ public class MongoListView : EditorWindow
         }
 
         if (GUILayout.Button("Reset"))
+        {
             PrepareData();
+        }
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
@@ -184,6 +186,11 @@ public class MongoListView : EditorWindow
                         if (previousElementsValue.Contains(item))
                             _mongoDatabases.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
 
+                // string filePath = Path.Combine(Application.dataPath, "MongoData.json");
+                // string json = MongoExtentions.GetJsonFile("MongoData.json");
+                // json = _mongoDatabases.ToJson();
+                // MongoExtentions.SaveJson(filePath,json);
+                
                 PrepareData();
             }
 
@@ -199,6 +206,8 @@ public class MongoListView : EditorWindow
             {
                 var objectID = collection["_id"].ToString();
                 _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
+                // string filePath = Path.Combine(Application.dataPath, "MongoData.json");
+                // MongoExtentions.SaveJson(filePath,_mongoDatabases.ToJson());
                 PrepareData();
                 
             }

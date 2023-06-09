@@ -144,18 +144,23 @@ public static class MongoExtentions
         List<MongoDatabases.Database> myDatabases = new();
         foreach (var database in databases)
         {
-            MongoDatabases.Database data = new MongoDatabases.Database();
-            data.name = database["name"].AsString;
-            foreach (var collection in client.GetAllCollections(database))
+            Debug.Log(database["name"]);
+            if (database["name"].AsString != "admin" && database["name"].AsString != "local")
             {
-                data.collections.Add(new MongoDatabases.Database.Collection()
-                {
-                    name = collection["name"].AsString,
-                    elements = client.GetDatabase(database["name"].AsString).GetCollectionAllValue(collection["name"].AsString)
-                });
-            }
+                MongoDatabases.Database data = new MongoDatabases.Database();
+                data.name = database["name"].AsString;
 
-            myDatabases.Add(data);
+                foreach (var collection in client.GetAllCollections(database))
+                {
+                    data.collections.Add(new MongoDatabases.Database.Collection()
+                    {
+                        name = collection["name"].AsString,
+                        elements = client.GetDatabase(database["name"].AsString).GetCollectionAllValue(collection["name"].AsString)
+                    });
+                }
+
+                myDatabases.Add(data);
+            }
         }
 
         mongoDatabase.databases = myDatabases;
@@ -182,22 +187,42 @@ public static class MongoExtentions
                 {
                     var cloudCollection = cloudDatabase.GetCollection<BsonDocument>(collection.name);
                     var remoteCollection = cloudDatabase.GetCollectionAllValue(collection.name);
-                    
-                    IsExistCloud(remoteCollection,collection.elements);
-                    
-                    
-                    foreach (var BsonElement in collection.elements)
-                    {
-                        var filter = Builders<BsonDocument>.Filter.Eq("_id", BsonElement["_id"]);
 
-                        if (cloudCollection.Find(filter).FirstOrDefault() is null)
+                    //IsExistCloud(remoteCollection,collection.elements);
+
+                    foreach (var remotedoc in remoteCollection)
+                    {
+                        foreach (var localdoc in collection.elements)
                         {
-                            cloudCollection.InsertOne(BsonElement);
-                        }
-                        else 
-                        {
-                                //Cloud'ta var ama yerel'de yok -> delete
-                                cloudCollection.ReplaceOne(filter,BsonElement);
+                            var remoteCheck = remoteCollection.FirstOrDefault(e => e["_id"] == localdoc["_id"]);
+                            var localCheck = collection.elements.FirstOrDefault(e => e["_id"] == remotedoc["_id"]);
+
+
+                            if (remoteCheck == null)
+                            {
+                                cloudDatabase.GetCollection<BsonDocument>(collection.name).InsertOne(localdoc);
+                                Debug.Log("Veri Basariyla Eklendi");
+                            }
+
+                            else if (remoteCheck != null && localCheck != null)
+                            {
+                                if (remoteCheck != localCheck)
+                                {
+                                    var filter = Builders<BsonDocument>.Filter.Eq("_id", localdoc["_id"]);
+                                    cloudDatabase.GetCollection<BsonDocument>(collection.name).ReplaceOne(filter, localdoc);
+                                    Debug.Log("Veri Basarı ile Guncellendi");
+                                }
+                            }
+
+                            else
+                            {
+                                cloudDatabase.GetCollection<BsonDocument>(collection.name).DeleteOne(remotedoc);
+                                Debug.Log("Veri Basarı ile silindi");
+                            }
+
+                            //Eğer localimde var ve cloud'ta yoksa ekle
+                            //Eğer cloud'ta var localde yoksa sil
+                            //Eğer cloudta var ve localde de varsa guncelle
                         }
                     }
                 }
@@ -205,37 +230,23 @@ public static class MongoExtentions
         }
     }
 
-    private static void IsExistCloud(List<BsonDocument> remoteCollection,List<BsonDocument> localCollection)
+    private static BsonDocument IsExistCloud(List<BsonDocument> remoteCollection, List<BsonDocument> localCollection, BsonDocument doc)
     {
-        foreach (var remotedoc in remoteCollection)
+        foreach (var remoteDoc in remoteCollection)
         {
-            foreach (var localdoc in localCollection)
-            {
-                if (remoteCollection.Contains(localdoc))
-                {
-                    //TODO: Guncelle
-                    Debug.Log("GUNCELLE");
-                }
-                 if (!remoteCollection.Contains(localdoc))
-                {
-                    //TODO: Ekle
-                    Debug.Log("Ekle");
-                }
-                 if (!localCollection.Contains(remotedoc))
-                {
-                    //TODO: Sil
-                    Debug.Log("Sil");
-                }
-            }
+            if (remoteDoc["_id"] != doc["_id"])
+                return remoteDoc;
+            // if (!localCollection.Contains(remoteDoc))
+            //     return remoteDoc;
         }
+
+        return null;
     }
 
     private static bool IsExistElement(IMongoCollection<BsonDocument> cloudCollection)
     {
-
         return true;
     }
 
     #endregion
-
 }

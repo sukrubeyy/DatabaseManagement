@@ -9,156 +9,16 @@
           "elements": [
             {
               "_id": ObjectId(
-              "643be928dd6d1908b83b9b86"
+              "64830b1edd6d1959b8449e1e"
               ),
-              "user_id": "15",
-              "e_mail": "mongouser@gmail.com",
-              "name": "Ramazan2",
-              "Surname": "Altuntepe"
-            },
-            {
-              "_id": ObjectId(
-              "644e6413dd6d197780968807"
-              ),
-              "user_id": "12",
-              "e_mail": "mongouser@gmail.com",
-              "name": "Sukru",
-              "Surname": "Cay"
-            },
-            {
-              "_id": ObjectId(
-              "647ddfd5dd6d194454a90f80"
-              ),
-              "user_id": "55",
-              "e_mail": "sdfsdfdsf",
-              "name": "gdfgdfgfd",
-              "Surname": "asdasdasdsadsa"
-            },
-            {
-              "_id": ObjectId(
-              "647dcb8bdd6d1944548d52cc"
-              ),
-              "user_id": "30",
-              "e_mail": "ysferol@gmail.com",
-              "name": "yusuf",
-              "Surname": "erol"
-            },
-            {
-              "_id": ObjectId(
-              "647de5f4dd6d194454c1fb2f"
-              ),
-              "user_id": "15",
-              "e_mail": "erenimo@gmail.com",
-              "name": "eren",
-              "Surname": "ertekin"
+              "ad": "sukru",
+              "soyad": "cay"
             }
           ]
         },
         {
           "name": "userItems",
           "elements": []
-        }
-      ]
-    },
-    {
-      "name": "admin",
-      "collections": []
-    },
-    {
-      "name": "local",
-      "collections": [
-        {
-          "name": "oplog.rs",
-          "elements": [
-            {
-              "lsid": {
-                "id": CSUUID(
-                "d0b87ada-a0d0-45d7-bb61-eb39e391913f"
-                ),
-                "uid": new
-                BinData(0,
-                "ddqot68vLpBUPnOuqFj2cdClv/dv/vF9ZVSwknYHEsE="
-                )
-              },
-              "txnNumber": NumberLong(1),
-              "op": "u",
-              "ns": "Users.userInfo",
-              "ui": CSUUID(
-              "146f7d59-4d74-4519-8528-8d92919386d7"
-              ),
-              "o": {
-                "_id": ObjectId(
-                "643be928dd6d1908b83b9b86"
-                ),
-                "user_id": "15",
-                "e_mail": "mongouser@gmail.com",
-                "name": "Ramazan2",
-                "Surname": "Altuntepe"
-              },
-              "o2": {
-                "_id": ObjectId(
-                "643be928dd6d1908b83b9b86"
-                )
-              },
-              "stmtId": 0,
-              "ts": Timestamp(1686132135,
-              1),
-              "t": NumberLong(391),
-              "v": NumberLong(2),
-              "wall": ISODate(
-              "2023-06-07T10:02:15.163Z"
-              ),
-              "prevOpTime": {
-                "ts": Timestamp(0,
-                0),
-                "t": NumberLong(-1)
-              }
-            },
-            {
-              "lsid": {
-                "id": CSUUID(
-                "d0b87ada-a0d0-45d7-bb61-eb39e391913f"
-                ),
-                "uid": new
-                BinData(0,
-                "ddqot68vLpBUPnOuqFj2cdClv/dv/vF9ZVSwknYHEsE="
-                )
-              },
-              "txnNumber": NumberLong(2),
-              "op": "u",
-              "ns": "Users.userInfo",
-              "ui": CSUUID(
-              "146f7d59-4d74-4519-8528-8d92919386d7"
-              ),
-              "o": {
-                "_id": ObjectId(
-                "644e6413dd6d197780968807"
-                ),
-                "user_id": "12",
-                "e_mail": "mongouser@gmail.com",
-                "name": "Sukru",
-                "Surname": "Cay"
-              },
-              "o2": {
-                "_id": ObjectId(
-                "644e6413dd6d197780968807"
-                )
-              },
-              "stmtId": 0,
-              "ts": Timestamp(1686132135,
-              11),
-              "t": NumberLong(391),
-              "v": NumberLong(2),
-              "wall": ISODate(
-              "2023-06-07T10:02:15.455Z"
-              ),
-              "prevOpTime": {
-                "ts": Timestamp(0,
-                0),
-                "t": NumberLong(-1)
-              }
-            }
-          ]
         }
       ]
     }
