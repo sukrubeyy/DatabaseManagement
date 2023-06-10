@@ -8,10 +8,9 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using UnityEngine;
 
-public static class MongoExtentions
+public static class ToolExtentions
 {
     #region For MongoDB ATLAS
-
     public static BsonDocument GetCollectionValues(this IMongoDatabase mongo, string collectionName)
     {
         BsonDocument doc = mongo.GetCollection<BsonDocument>(collectionName).Find(new BsonDocument()).FirstOrDefault();
@@ -19,18 +18,15 @@ public static class MongoExtentions
             return null;
         return doc;
     }
-
     public static List<BsonDocument> GetCollectionAllValue(this IMongoDatabase database, string collectionName)
     {
         var collection = database.GetCollection<BsonDocument>(collectionName);
         return collection.Find(new BsonDocument()).ToList();
     }
-
     public static void AddCollectionValue(this IMongoDatabase mongo, BsonDocument data, string collectionName)
     {
         mongo.GetCollection<BsonDocument>(collectionName).InsertOne(data);
     }
-
     public static void UpdateOne(this IMongoDatabase mongo, string columnName, string oldValue, string newValue)
     {
         //UPDATE
@@ -38,7 +34,6 @@ public static class MongoExtentions
         var filter2 = Builders<BsonDocument>.Update.Set(columnName, newValue);
         mongo.GetCollection<BsonDocument>("userInfo").UpdateMany(filter, filter2);
     }
-
     public static void UpdateOne(this IMongoDatabase mongo, string columnName, int oldValue, int newValue)
     {
         //UPDATE
@@ -46,29 +41,24 @@ public static class MongoExtentions
         var filter2 = Builders<BsonDocument>.Update.Set(columnName, newValue);
         mongo.GetCollection<BsonDocument>("userInfo").UpdateMany(filter, filter2);
     }
-
     public static void Delete(this IMongoDatabase mongo, string collectionName, string id, string searchValue)
     {
         //DELETE
         var filter3 = Builders<BsonDocument>.Filter.Eq(id, searchValue);
         mongo.GetCollection<BsonDocument>(collectionName).DeleteOne(filter3);
     }
-
     public static List<BsonDocument> GetAllCollections(this MongoClient client, BsonDocument doc)
     {
         return client.GetDatabase(doc["name"].AsString).ListCollections().ToList();
     }
-
     public static List<string> GetAllCollectionNames(this MongoClient client, BsonDocument doc)
     {
         return client.GetDatabase(doc["name"].AsString).ListCollectionNames().ToList();
     }
-
     public static IAsyncCursor<BsonDocument> GetAllDatabases(this MongoClient client)
     {
         return client.ListDatabases();
     }
-
     public static MongoClient ConnectionAccount(string url)
     {
         if (!string.IsNullOrEmpty(url))
@@ -83,7 +73,6 @@ public static class MongoExtentions
 
         return null;
     }
-
     public static IMongoDatabase ConnectionDatabase(this MongoClient _client, string dbName)
     {
         if (_client != null && !string.IsNullOrEmpty(dbName))
@@ -93,19 +82,18 @@ public static class MongoExtentions
 
         return null;
     }
-
     #endregion
 
 
     #region FOR JSON
 
-    public static MongoDatabases SerializeMongoDatabases()
+    public static MongoManagement SerializeMongoDatabases()
     {
-        string filePath = Path.Combine(Application.dataPath, "MongoData.json");
+        string filePath = FileHelper.MongoFilePath.assetsFolder;
         var jsonContent = File.ReadAllText(filePath);
         if (File.Exists(filePath))
         {
-            return BsonSerializer.Deserialize<MongoDatabases>(jsonContent);
+            return BsonSerializer.Deserialize<MongoManagement>(jsonContent);
         }
         else
         {
@@ -118,7 +106,7 @@ public static class MongoExtentions
 
     public static string GetJsonFile(string jsonName)
     {
-        string filePath = Path.Combine(Application.dataPath, jsonName);
+        string filePath = FileHelper.MongoFilePath.assetsFolder;
         if (File.Exists(filePath))
         {
             var jsonContent = File.ReadAllText(filePath);
@@ -131,27 +119,27 @@ public static class MongoExtentions
         }
     }
 
-    public static bool IsExistJson(string jsonName) => File.Exists(Path.Combine(Application.dataPath, jsonName));
+    public static bool IsExistJson(string jsonName) => File.Exists(FileHelper.MongoFilePath.assetsFolder);
 
     public static void CreateCloudDataToJson(string connectionUrl)
     {
         MongoClient client = new MongoClient(connectionUrl);
 
         var databases = client.GetAllDatabases().ToList();
-        MongoDatabases mongoDatabase = new();
-        mongoDatabase.connectionUrl = connectionUrl;
+        MongoManagement mongoManagement = new();
+        mongoManagement.connectionUrl = connectionUrl;
 
-        List<MongoDatabases.Database> myDatabases = new();
+        List<MongoManagement.Database> myDatabases = new();
         foreach (var database in databases)
         {
             if (database["name"].AsString != "admin" && database["name"].AsString != "local")
             {
-                MongoDatabases.Database data = new MongoDatabases.Database();
+                MongoManagement.Database data = new MongoManagement.Database();
                 data.name = database["name"].AsString;
 
                 foreach (var collection in client.GetAllCollections(database))
                 {
-                    data.collections.Add(new MongoDatabases.Database.Collection()
+                    data.collections.Add(new MongoManagement.Database.Collection()
                     {
                         name = collection["name"].AsString,
                         elements = client.GetDatabase(database["name"].AsString).GetCollectionAllValue(collection["name"].AsString)
@@ -162,9 +150,9 @@ public static class MongoExtentions
             }
         }
 
-        mongoDatabase.databases = myDatabases;
-        string json = mongoDatabase.ToJson();
-        System.IO.File.WriteAllText("Assets/MongoData.json", json);
+        mongoManagement.databases = myDatabases;
+        string json = mongoManagement.ToJson();
+        System.IO.File.WriteAllText(FileHelper.MongoFilePath.assetsFolder, json);
     }
 
     public static void SendJsonToCloud()
@@ -174,12 +162,12 @@ public static class MongoExtentions
         if (IsExistJson(jsonName))
         {
             string json = GetJsonFile(jsonName);
-            MongoDatabases mongoDatabases = SerializeMongoDatabases();
+            MongoManagement mongoManagement = SerializeMongoDatabases();
 
-            var connectionString = mongoDatabases.connectionUrl;
+            var connectionString = mongoManagement.connectionUrl;
             var client = new MongoClient(connectionString);
 
-            foreach (var database in mongoDatabases.databases)
+            foreach (var database in mongoManagement.databases)
             {
                 var cloudDatabase = client.GetDatabase(database.name);
                 foreach (var collection in database.collections)

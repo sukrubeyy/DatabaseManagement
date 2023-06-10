@@ -1,16 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Mongo;
-using MongoDB.Bson;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Purchasing.MiniJSON;
-using Newtonsoft.Json;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
 
 public class MongoListView : EditorWindow
 {
@@ -20,15 +12,15 @@ public class MongoListView : EditorWindow
     private Rect rect2;
     private Rect rect3;
     private Rect mainRect;
-    private MongoDatabases _mongoDatabases;
-    private MongoDatabases.Database.Collection selectedCollection;
-    private MongoDatabases.Database selectedDatabase;
+    private MongoManagement _mongoManagement;
+    private MongoManagement.Database.Collection selectedCollection;
+    private MongoManagement.Database selectedDatabase;
     private List<string> collectionData;
     Vector2 scrollPosition;
     private List<string> elements;
     private Dictionary<string, List<string>> PreviousTextInput;
 
-    [MenuItem("Database Management/MongoList Editor")]
+    [MenuItem("Database Management/MongoList Editor",priority = 2)]
     public static void Initialize()
     {
         _init = true;
@@ -52,13 +44,13 @@ public class MongoListView : EditorWindow
         PreviousTextInput = new();
         
         //Tüm Json içindeki dataları burdan çek.
-        _mongoDatabases = MongoExtentions.SerializeMongoDatabases();
-        selectedDatabase = _mongoDatabases.databases[0];
+        _mongoManagement = ToolExtentions.SerializeMongoDatabases();
+        selectedDatabase = _mongoManagement.databases[0];
         selectedCollection = selectedDatabase.collections[0];
         PrepareElementList(selectedCollection);
     }
 
-    private void PrepareElementList(MongoDatabases.Database.Collection collection)
+    private void PrepareElementList(MongoManagement.Database.Collection collection)
     {
        elements.Clear();
        PreviousTextInput.Clear();
@@ -85,7 +77,7 @@ public class MongoListView : EditorWindow
 
     private void OnGUI()
     {
-        if (_mongoDatabases == null)
+        if (_mongoManagement == null)
             return;
 
         #region Window Style
@@ -117,12 +109,12 @@ public class MongoListView : EditorWindow
             GUILayout.BeginHorizontal();
             {
             if (GUILayout.Button("Send Json to Cloud"))
-                MongoExtentions.SendJsonToCloud();
+                ToolExtentions.SendJsonToCloud();
 
             if (GUILayout.Button("Reset"))
                 PrepareData();
             if(GUILayout.Button("Uptade Json File"))
-                MongoExtentions.CreateCloudDataToJson(_mongoDatabases.connectionUrl);
+                ToolExtentions.CreateCloudDataToJson(_mongoManagement.connectionUrl);
             }
             GUILayout.EndHorizontal();
         GUILayout.EndArea();
@@ -132,7 +124,7 @@ public class MongoListView : EditorWindow
         #region Choose Database
 
         GUILayout.BeginArea(rect1);
-        foreach (var database in _mongoDatabases.databases)
+        foreach (var database in _mongoManagement.databases)
             if (GUILayout.Button(database.name))
                 selectedDatabase = database;
         GUILayout.EndArea();
@@ -164,7 +156,7 @@ public class MongoListView : EditorWindow
         int itemIndex = 1;
 
         if (GUILayout.Button("Add",GUILayout.Width(rect3.width)))
-            AddElementEditor.Initialize(selectedDatabase, selectedCollection);
+            MongoAddElementWindow.Initialize(selectedDatabase, selectedCollection);
 
         foreach (var collection in selectedCollection.elements)
         {
@@ -190,8 +182,10 @@ public class MongoListView : EditorWindow
                 
                 foreach (var item in elements)
                     if (item != objectID)
-                            _mongoDatabases.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
-
+                        _mongoManagement.Update(selectedDatabase,selectedCollection,objectID,previousElementsValue);
+                            //_mongoManagement.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
+                
+                
                 //PrepareData();
                 GUI.FocusControl(null);
             }
@@ -207,7 +201,8 @@ public class MongoListView : EditorWindow
             if (GUILayout.Button("X", GUILayout.Width(30), GUILayout.Height(30)))
             {
                 var objectID = collection["_id"].ToString();
-                _mongoDatabases.Delete(selectedDatabase, selectedCollection, objectID);
+                //_mongoManagement.Delete(selectedDatabase, selectedCollection, objectID);
+                _mongoManagement.Delete(selectedDatabase, selectedCollection, objectID);
                 PrepareData();
                 
             }

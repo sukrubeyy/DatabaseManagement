@@ -1,23 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Mongo;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using UnityEditor;
 using UnityEngine;
-using static Mongo.MongoDatabases;
+using static Mongo.MongoManagement;
 
-public class AddElementEditor : EditorWindow
+public class MongoAddElementWindow : EditorWindow
 {
-    private static AddElementEditor Window;
+    private static MongoAddElementWindow Window;
     private static List<string> inputValues;
     private static bool _init;
     private static int count;
     private static Database selectedDatabase;
     private static Database.Collection selectedCollection;
-    private static MongoDatabases mongoDaatabases;
+    private static MongoManagement mongoDaatabases;
     
     public static void Initialize(Database _database, Database.Collection _collection)
     {
@@ -25,9 +21,7 @@ public class AddElementEditor : EditorWindow
         
         EditorPrefs.SetString("selectedDatabase",_database.name);
         EditorPrefs.SetString("selectedCollection",_collection.name);
-        
-        Window = GetWindow<AddElementEditor>("Add Element");
-      
+        Window = GetWindow<MongoAddElementWindow>("Add Element");
         Window.PrepareData();
         Window.Show();
     }
@@ -37,15 +31,14 @@ public class AddElementEditor : EditorWindow
         if (Window != null || _init)
             return;
 
-        Window = GetWindow<AddElementEditor>();
+        Window = GetWindow<MongoAddElementWindow>();
         Window.PrepareData();
-        
     }
 
     private void PrepareData()
     {
         inputValues = new();
-            mongoDaatabases = MongoExtentions.SerializeMongoDatabases();
+            mongoDaatabases = ToolExtentions.SerializeMongoDatabases();
             foreach (var database in mongoDaatabases.databases)
             {
                 if (database.name == EditorPrefs.GetString("selectedDatabase"))
@@ -82,7 +75,7 @@ public class AddElementEditor : EditorWindow
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Save"))
             {
-                mongoDaatabases.Add(selectedDatabase,selectedCollection,inputValues);
+                mongoDaatabases.Create(selectedDatabase,selectedCollection,inputValues);
                 ClearPrefs();
                 Window.Close();
             }

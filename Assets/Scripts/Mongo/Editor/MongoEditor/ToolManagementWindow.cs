@@ -1,19 +1,12 @@
-#if UNITY_EDITOR
-using System;
-using System.Collections.Generic;
-using Mongo;
-using MongoDB.Driver;
 using UnityEditor;
 using UnityEngine;
-using Newtonsoft.Json;
-using MongoDB.Bson;
 
-public class DatabaseWindow : EditorWindow
+public class ToolManagementWindow : EditorWindow
 {
     private static bool showAllCollections = false;
     public DatabaseType databaseType;
     public string connectionUrl;
-    private static DatabaseWindow Window;
+    private static ToolManagementWindow Window;
     private static bool isInit;
 
     [Header("Serialized Object And Property")]
@@ -23,11 +16,11 @@ public class DatabaseWindow : EditorWindow
     private SerializedProperty soConnectionUrl;
 
 
-    [MenuItem("Database Management/Database Connection")]
+    [MenuItem("Database Management/Database Connection",priority = 1)]
     public static void ShowWindow()
     {
         isInit = true;
-        Window = GetWindow<DatabaseWindow>();
+        Window = GetWindow<ToolManagementWindow>();
         Window.Show();
     }
 
@@ -69,10 +62,9 @@ public class DatabaseWindow : EditorWindow
 
             if (GUILayout.Button("Connect"))
             {
-                MongoExtentions.CreateCloudDataToJson(connectionUrl);
+                ToolExtentions.CreateCloudDataToJson(connectionUrl);
             }
         }
         GUILayout.EndVertical();
     }
 }
-#endif
