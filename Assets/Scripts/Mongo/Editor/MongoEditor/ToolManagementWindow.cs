@@ -1,9 +1,9 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 public class ToolManagementWindow : EditorWindow
 {
-    private static bool showAllCollections = false;
     public DatabaseType databaseType;
     public string connectionUrl;
     private static ToolManagementWindow Window;
@@ -49,6 +49,11 @@ public class ToolManagementWindow : EditorWindow
                 break;
             case DatabaseType.firebase:
                 break;
+            case DatabaseType.SQLite:
+                SQLiteUI();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -66,5 +71,11 @@ public class ToolManagementWindow : EditorWindow
             }
         }
         GUILayout.EndVertical();
+    }
+
+    private void SQLiteUI()
+    {
+        GUILayout.Space(10);
+        EditorGUILayout.HelpBox("Selamlar Ben SQLite",MessageType.Info);
     }
 }

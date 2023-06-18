@@ -8,7 +8,6 @@ Assets/Plugins/Editor/JetBrains*
 # Visual Studio Code
 .vscode/
 
-
 ### Unity ###
 [Ll]ibrary/
 [Tt]emp/
@@ -49,5 +48,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Custom exclusions
+Logs/AssetImportWorker0.log
+Logs/shadercompiler-AssetImportWorker0.log
+Logs/AssetImportWorker1.log
 
 # End of https://www.gitignore.io/api/unity

@@ -12,13 +12,13 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Mongo.MongoManagement.Database;
+
 namespace Mongo
 {
     public class MongoManagement : DatabaseManager
     {
         public string connectionUrl;
         public List<Database> databases;
-
         public class Database
         {
             public string name;
@@ -56,7 +56,7 @@ namespace Mongo
             int indexCount = 0;
             foreach (var newElement in foundValues)
             {
-                newJsonObject.Add(new BsonElement(newElement.Name, newValue[indexCount].ToString()));
+                newJsonObject.Add(new BsonElement(newElement.Name, newValue[indexCount]));
                 indexCount++;
             }
 
@@ -66,7 +66,7 @@ namespace Mongo
                 .FirstOrDefault(e => e["_id"].ToString() == objectID);
 
             newJsonObject["_id"] = new BsonObjectId(objectID);
-            int item2Count = 0;
+            //int item2Count = 0;
             foreach (var item in newJson.databases)
             foreach (var item2 in item.collections)
             {
@@ -77,7 +77,7 @@ namespace Mongo
                     item2.elements.Add(newJsonObject);
                 }
 
-                item2Count++;
+                //item2Count++;
             }
 
             ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
@@ -87,7 +87,6 @@ namespace Mongo
         {
             Database _database = null;
             Database.Collection _collection = null;
-            string objectID = null;
             List<string> newValue = null;
 
             foreach (var parametre in parameters)
@@ -134,8 +133,6 @@ namespace Mongo
             Database _database = null;
             Database.Collection _collection = null;
             string objectID = null;
-            List<string> newValue = null;
-
             foreach (var parametre in parameters)
             {
                 if (parametre is Database)
@@ -157,11 +154,9 @@ namespace Mongo
                     item2.elements.Remove(targetJsonObject);
                 }
 
-            ToolExtentions.SaveJson(Path.Combine(Application.dataPath, "MongoData.json"), newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
         }
 
-        public override void Read(params object[] parameters)
-        {
-        }
+        public override void Read(params object[] parameters){}
     }
 }

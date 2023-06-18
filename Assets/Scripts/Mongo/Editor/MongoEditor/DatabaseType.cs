@@ -1,5 +1,6 @@
 public enum DatabaseType
 {
         mongodb,
-        firebase
+        firebase,
+        SQLite
 }
