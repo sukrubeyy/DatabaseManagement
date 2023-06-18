@@ -1,4 +1,4 @@
 # DatabaseManagement
 
-<h1>Mongodb bitti sadece refactor ve guncelleme kısmında bulunan ufak bir bug düzeltilecek.</h1>
-<h1>SQLite paketleri kuruldu.</h1>
+<h5>Mongodb bitti sadece refactor ve guncelleme kısmında bulunan ufak bir bug düzeltilecek.</h5>
+<h5>SQLite paketleri kuruldu.</h5>
