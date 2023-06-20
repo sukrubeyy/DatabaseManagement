@@ -5,9 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using static Mongo.MongoManagement;
 
-public class MongoAddElementWindow : EditorWindow
+public class AddCollectionElement : EditorWindow
 {
-    private static MongoAddElementWindow Window;
+    private static AddCollectionElement Window;
     private static List<string> inputValues;
     private static bool _init;
     private static int count;
@@ -23,7 +23,7 @@ public class MongoAddElementWindow : EditorWindow
 
         EditorPrefs.SetString("selectedDatabase", _database.name);
         EditorPrefs.SetString("selectedCollection", _collection.name);
-        Window = GetWindow<MongoAddElementWindow>("Add Element");
+        Window = GetWindow<AddCollectionElement>("Add Element");
         Window.PrepareData();
         Window.Show();
     }
@@ -33,7 +33,7 @@ public class MongoAddElementWindow : EditorWindow
         if (Window != null || _init)
             return;
 
-        Window = GetWindow<MongoAddElementWindow>();
+        Window = GetWindow<AddCollectionElement>();
         Window.PrepareData();
     }
 
@@ -58,9 +58,9 @@ public class MongoAddElementWindow : EditorWindow
     }
 
     private void ClearPrefs() => EditorPrefs.DeleteAll();
+
     private void OnGUI()
     {
-        //var docs = mongoDaatabases.databases[0].collections[0].elements[0];
         var docs = mongoDaatabases.databases.Find(e => e == selectedDatabase).collections.Find(e => e == selectedCollection).elements.FirstOrDefault();
         if (docs is not null)
         {
@@ -99,21 +99,56 @@ public class MongoAddElementWindow : EditorWindow
             EditorGUILayout.HelpBox("You don't have a collection item do you wanna create ", MessageType.Info);
             notExistElementCount = EditorGUILayout.TextField("Field Count", notExistElementCount);
             int elementCount;
-            bool isCount = int.TryParse(notExistElementCount, out elementCount);
+            var isCount = int.TryParse(notExistElementCount, out elementCount);
+
             if (isCount)
             {
-                for (int i = 0; i < elementCount; i++)
+                GUILayout.BeginHorizontal();
                 {
+                    GUILayout.Label("PROP NAME", new GUIStyle() {alignment = TextAnchor.MiddleCenter, normal = new GUIStyleState() {textColor = Color.white}});
+                    GUILayout.Label("PROP VALUE", new GUIStyle() {alignment = TextAnchor.MiddleCenter, normal = new GUIStyleState() {textColor = Color.white}});
+                }
+                GUILayout.EndHorizontal();
 
+                // for (int i = 0; i < elementCount; i++)
+                // {
+                //     GUILayout.BeginHorizontal();
+                //     {
+                //         GUILayout.TextField("");
+                //         GUILayout.TextField("");
+                //     }
+                //     GUILayout.EndHorizontal();
+                // }
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.BeginVertical();
+                    {
+                        for (int i = 0; i < elementCount; i++)
+                        {
+                            GUILayout.TextField("");
+                        }
+                    }
+                    GUILayout.EndVertical();
+                    
+                    GUILayout.BeginVertical();
+                    {
+                        for (int i = 0; i < elementCount; i++)
+                        {
+                            GUILayout.TextField("");
+                        }
+                    }
+                    GUILayout.EndVertical();
+                    
+                }
+                GUILayout.EndHorizontal();
+
+
+                if (GUILayout.Button("Create"))
+                {
                 }
             }
-            else
-            {
-                EditorGUILayout.HelpBox("Please Just Write Number", MessageType.Info);
-            }
-
         }
-
     }
 
     private void PrepareInputList(int count)

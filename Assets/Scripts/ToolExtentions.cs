@@ -82,6 +82,15 @@ public static class ToolExtentions
 
         return null;
     }
+
+    public static void CreateNewCollection(string databaseName, string collectionName)
+    {
+        MongoManagement mongo = SerializeMongoDatabases();
+        MongoClient client = ConnectionAccount(mongo.connectionUrl);
+        IMongoDatabase database = client.GetDatabase(databaseName);
+        database.CreateCollection(collectionName);
+        Debug.LogWarning("Collection Created Successfully");
+    }
     #endregion
 
 

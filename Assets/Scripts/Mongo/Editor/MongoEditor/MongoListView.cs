@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mongo;
+using MongoDB.Driver;
 using UnityEditor;
 using UnityEngine;
 
@@ -97,6 +98,7 @@ public class MongoListView : EditorWindow
 
          DrawVerticalLine(mainRect.yMax, lineWidth);
          DrawHorizontalLine(rect1.xMax, lineWidth);
+         DrawVerticalLine(mainRect.yMax+40,lineWidth);
          DrawHorizontalLine(rect2.xMax, lineWidth);
         // DrawVerticalLine(rect1.yMax, lineWidth);
         // DrawVerticalLine(rect2.yMax, lineWidth);
@@ -124,6 +126,13 @@ public class MongoListView : EditorWindow
         #region Choose Database
 
         GUILayout.BeginArea(rect1);
+        
+        if (GUILayout.Button("Create a new database"))
+        {
+            //TODO: CREATE A DATABASE
+        }
+        GUILayout.Space(20f);
+        
         foreach (var database in _mongoManagement.databases)
             if (GUILayout.Button(database.name))
                 selectedDatabase = database;
@@ -134,6 +143,14 @@ public class MongoListView : EditorWindow
         #region Choose Collection
 
         GUILayout.BeginArea(rect2);
+        
+        if (GUILayout.Button("Create a new collection"))
+        {
+            AddCollection.Initialize(selectedDatabase);
+            //TODO: CREATE A COLLECTION
+        }
+        GUILayout.Space(20f);
+        
         foreach (var collection in selectedDatabase.collections)
             if (GUILayout.Button(collection.name))
             {
@@ -155,9 +172,11 @@ public class MongoListView : EditorWindow
 
         int itemIndex = 1;
 
-        if (GUILayout.Button("Add",GUILayout.Width(rect3.width)))
-            MongoAddElementWindow.Initialize(selectedDatabase, selectedCollection);
-
+        if (GUILayout.Button("Create a new Item"))
+            AddCollectionElement.Initialize(selectedDatabase, selectedCollection);
+        
+        GUILayout.Space(10f);
+        
         foreach (var collection in selectedCollection.elements)
         {
             GUI.color = Color.yellow;
