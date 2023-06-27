@@ -20,6 +20,7 @@ public class AddCollection : EditorWindow
         Window = GetWindow<AddCollection>("Add Element");
         Window.PrepareData();
         Window.Show();
+        _init = true;
     }
 
     private void OnEnable()

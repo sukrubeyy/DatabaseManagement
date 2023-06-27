@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mongo;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using UnityEditor;
 using UnityEngine;
 using static Mongo.MongoManagement;
@@ -9,13 +12,14 @@ public class AddCollectionElement : EditorWindow
 {
     private static AddCollectionElement Window;
     private static List<string> inputValues;
+    private static List<string> propNameList;
+    private static List<string> propValueList;
     private static bool _init;
-    private static int count;
     private static Database selectedDatabase;
     private static Database.Collection selectedCollection;
     private static MongoManagement mongoDaatabases;
-
     private static string notExistElementCount;
+    private int elementCount;
 
     public static void Initialize(Database _database, Database.Collection _collection)
     {
@@ -37,10 +41,21 @@ public class AddCollectionElement : EditorWindow
         Window.PrepareData();
     }
 
+    private void OnDisable()
+    {
+        elementCount = 0;
+        notExistElementCount = "";
+        inputValues.Clear();
+        propNameList.Clear();
+        propValueList.Clear();
+    }
+
     private void PrepareData()
     {
-        inputValues = new();
+        inputValues = new List<string>();
         mongoDaatabases = ToolExtentions.SerializeMongoDatabases();
+        propNameList = new List<string>();
+        propValueList = new List<string>();
         foreach (var database in mongoDaatabases.databases)
         {
             if (database.name == EditorPrefs.GetString("selectedDatabase"))
@@ -98,8 +113,8 @@ public class AddCollectionElement : EditorWindow
         {
             EditorGUILayout.HelpBox("You don't have a collection item do you wanna create ", MessageType.Info);
             notExistElementCount = EditorGUILayout.TextField("Field Count", notExistElementCount);
-            int elementCount;
-            var isCount = int.TryParse(notExistElementCount, out elementCount);
+
+            var isCount = int.TryParse(notExistElementCount, out  elementCount);
 
             if (isCount)
             {
@@ -109,45 +124,53 @@ public class AddCollectionElement : EditorWindow
                     GUILayout.Label("PROP VALUE", new GUIStyle() {alignment = TextAnchor.MiddleCenter, normal = new GUIStyleState() {textColor = Color.white}});
                 }
                 GUILayout.EndHorizontal();
-
-                // for (int i = 0; i < elementCount; i++)
-                // {
-                //     GUILayout.BeginHorizontal();
-                //     {
-                //         GUILayout.TextField("");
-                //         GUILayout.TextField("");
-                //     }
-                //     GUILayout.EndHorizontal();
-                // }
+                for (int i = 0; i < elementCount; i++)
+                {
+                    propValueList.Add("");
+                    propNameList.Add("");
+                }
 
                 GUILayout.BeginHorizontal();
                 {
+                    //For PropName
                     GUILayout.BeginVertical();
                     {
                         for (int i = 0; i < elementCount; i++)
                         {
-                            GUILayout.TextField("");
+                            propNameList[i] = EditorGUILayout.TextField(propNameList[i]);
                         }
                     }
                     GUILayout.EndVertical();
-                    
+
+                    //For PropValue
                     GUILayout.BeginVertical();
                     {
                         for (int i = 0; i < elementCount; i++)
                         {
-                            GUILayout.TextField("");
+                            propValueList[i] = EditorGUILayout.TextField(propValueList[i]);
                         }
                     }
                     GUILayout.EndVertical();
-                    
                 }
                 GUILayout.EndHorizontal();
-
-
-                if (GUILayout.Button("Create"))
-                {
-                }
             }
+            else
+            {
+                EditorGUILayout.HelpBox("Just Number Please!", MessageType.Error);
+            }
+            
+            if (GUILayout.Button("Create"))
+            {
+                BsonDocument newDoc = new BsonDocument();
+                newDoc.Add("_id", ObjectId.GenerateNewId());
+                for (int i = 0; i < elementCount; i++)
+                    newDoc.Add(propNameList[i], propValueList[i]);
+                mongoDaatabases.databases.FirstOrDefault(e => e == selectedDatabase).
+                    collections.FirstOrDefault(e => e == selectedCollection).elements.Add(newDoc);
+                ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, mongoDaatabases.ToJson());
+                Window.Close();
+            }
+            
         }
     }
 

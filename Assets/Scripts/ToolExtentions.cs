@@ -10,7 +10,9 @@ using UnityEngine;
 
 public static class ToolExtentions
 {
+    
     #region For MongoDB ATLAS
+
     public static BsonDocument GetCollectionValues(this IMongoDatabase mongo, string collectionName)
     {
         BsonDocument doc = mongo.GetCollection<BsonDocument>(collectionName).Find(new BsonDocument()).FirstOrDefault();
@@ -18,15 +20,18 @@ public static class ToolExtentions
             return null;
         return doc;
     }
+
     public static List<BsonDocument> GetCollectionAllValue(this IMongoDatabase database, string collectionName)
     {
         var collection = database.GetCollection<BsonDocument>(collectionName);
         return collection.Find(new BsonDocument()).ToList();
     }
+
     public static void AddCollectionValue(this IMongoDatabase mongo, BsonDocument data, string collectionName)
     {
         mongo.GetCollection<BsonDocument>(collectionName).InsertOne(data);
     }
+
     public static void UpdateOne(this IMongoDatabase mongo, string columnName, string oldValue, string newValue)
     {
         //UPDATE
@@ -34,6 +39,7 @@ public static class ToolExtentions
         var filter2 = Builders<BsonDocument>.Update.Set(columnName, newValue);
         mongo.GetCollection<BsonDocument>("userInfo").UpdateMany(filter, filter2);
     }
+
     public static void UpdateOne(this IMongoDatabase mongo, string columnName, int oldValue, int newValue)
     {
         //UPDATE
@@ -41,24 +47,29 @@ public static class ToolExtentions
         var filter2 = Builders<BsonDocument>.Update.Set(columnName, newValue);
         mongo.GetCollection<BsonDocument>("userInfo").UpdateMany(filter, filter2);
     }
+
     public static void Delete(this IMongoDatabase mongo, string collectionName, string id, string searchValue)
     {
         //DELETE
         var filter3 = Builders<BsonDocument>.Filter.Eq(id, searchValue);
         mongo.GetCollection<BsonDocument>(collectionName).DeleteOne(filter3);
     }
+
     public static List<BsonDocument> GetAllCollections(this MongoClient client, BsonDocument doc)
     {
         return client.GetDatabase(doc["name"].AsString).ListCollections().ToList();
     }
+
     public static List<string> GetAllCollectionNames(this MongoClient client, BsonDocument doc)
     {
         return client.GetDatabase(doc["name"].AsString).ListCollectionNames().ToList();
     }
+
     public static IAsyncCursor<BsonDocument> GetAllDatabases(this MongoClient client)
     {
         return client.ListDatabases();
     }
+
     public static MongoClient ConnectionAccount(string url)
     {
         if (!string.IsNullOrEmpty(url))
@@ -73,6 +84,7 @@ public static class ToolExtentions
 
         return null;
     }
+
     public static IMongoDatabase ConnectionDatabase(this MongoClient _client, string dbName)
     {
         if (_client != null && !string.IsNullOrEmpty(dbName))
@@ -86,13 +98,11 @@ public static class ToolExtentions
     public static void CreateNewCollection(string databaseName, string collectionName)
     {
         MongoManagement mongo = SerializeMongoDatabases();
-        MongoClient client = ConnectionAccount(mongo.connectionUrl);
-        IMongoDatabase database = client.GetDatabase(databaseName);
-        database.CreateCollection(collectionName);
-        Debug.LogWarning("Collection Created Successfully");
+        mongo.databases.FirstOrDefault(e => e.name == databaseName).collections.Add(new MongoManagement.Database.Collection() { name = collectionName, elements = new List<BsonDocument>() });
+        SaveJson(FileHelper.MongoFilePath.assetsFolder, mongo.ToJson());
     }
-    #endregion
 
+    #endregion
 
     #region FOR JSON
 
@@ -106,7 +116,6 @@ public static class ToolExtentions
         }
         else
         {
-            Debug.LogError("Json File Does Not Exist");
             return null;
         }
     }
@@ -166,11 +175,10 @@ public static class ToolExtentions
 
     public static void SendJsonToCloud()
     {
-        string jsonName = "MongoData.json";
-
-        if (IsExistJson(jsonName))
+        CheckDatabaseIsExistLocal();
+        if (IsExistJson(FileHelper.ResourcesName.mongoFileName))
         {
-            string json = GetJsonFile(jsonName);
+            string json = GetJsonFile(FileHelper.ResourcesName.mongoFileName);
             MongoManagement mongoManagement = SerializeMongoDatabases();
 
             var connectionString = mongoManagement.connectionUrl;
@@ -179,44 +187,109 @@ public static class ToolExtentions
             foreach (var database in mongoManagement.databases)
             {
                 var cloudDatabase = client.GetDatabase(database.name);
+
                 foreach (var collection in database.collections)
                 {
+                    CheckCollectionIsExistCloud(database, cloudDatabase, collection);
                     var remoteCollection = cloudDatabase.GetCollectionAllValue(collection.name);
 
-                    foreach (var remotedoc in remoteCollection)
+                    foreach (var item in collection.elements)
                     {
-                        foreach (var localdoc in collection.elements)
+                        var remote = remoteCollection.FirstOrDefault(e => e["_id"] == item["_id"]);
+                        if (remote == null)
                         {
-                            var remoteCheck = remoteCollection.FirstOrDefault(e => e["_id"] == localdoc["_id"]);
-                            var localCheck = collection.elements.FirstOrDefault(e => e["_id"] == remotedoc["_id"]);
-
-                            if (remoteCheck == null)
-                            {
-                                cloudDatabase.GetCollection<BsonDocument>(collection.name).InsertOne(localdoc);
-                                Debug.LogWarning("Data Added Successfuly");
-                            }
-
-                            else if (remoteCheck != null && localCheck != null)
-                            {
-                                if (remoteCheck != localCheck)
-                                {
-                                    var filter = Builders<BsonDocument>.Filter.Eq("_id", localdoc["_id"]);
-                                    cloudDatabase.GetCollection<BsonDocument>(collection.name).ReplaceOne(filter, localdoc);
-                                    Debug.LogWarning("Data Uptade Successfuly");
-                                }
-                            }
-
-                            else
-                            {
-                                cloudDatabase.GetCollection<BsonDocument>(collection.name).DeleteOne(remotedoc);
-                                Debug.LogWarning("Data Deleted Successfuly");
-                            }
+                            Debug.Log("Create" + item);
+                            cloudDatabase.GetCollection<BsonDocument>(collection.name).InsertOne(item);
                         }
+                        if (remote != null && item != null)
+                        {
+                            if (remote != item)
+                            {
+                                var filter = Builders<BsonDocument>.Filter.Eq("_id", item["_id"]);
+                                cloudDatabase.GetCollection<BsonDocument>(collection.name).ReplaceOne(filter, item);
+                            }
+                            Debug.Log("Update" + remote + "  to      " + item);
+                        }
+
+                        DeleteDocument(remoteCollection.Except(collection.elements), cloudDatabase.GetCollection<BsonDocument>(collection.name));
                     }
+                }
+            }
+
+        }
+    }
+
+    private static void DeleteDocument(IEnumerable<BsonDocument> enumerable, IMongoCollection<BsonDocument> mongoCollection)
+    {
+        foreach (var item in enumerable)
+            mongoCollection.DeleteOne(item);
+    }
+
+    private static void CheckDatabaseIsExistLocal()
+    {
+        MongoManagement mongo = SerializeMongoDatabases();
+        MongoClient client = new MongoClient(mongo.connectionUrl);
+
+        foreach (var remoteDatabase in client.ListDatabaseNames().ToList())
+        {
+            if (remoteDatabase == "admin" || remoteDatabase == "local") continue;
+            foreach (var localDatabase in mongo.databases)
+            {
+                //cloud'ta yoksa oluştur
+                if (!client.ListDatabaseNames().ToList().Contains(localDatabase.name))
+                {
+                    IMongoDatabase newDatabase = client.GetDatabase(localDatabase.name);
+                    newDatabase.CreateCollection("Deneme");
+                }
+                //cloud'ta var fakat local'de yoksa cloud'tan sil
+                else if (client.ListDatabaseNames().ToList().Contains(localDatabase.name) && mongo.databases.FirstOrDefault(e => e.name == remoteDatabase) is null)
+                {
+                    client.DropDatabase(remoteDatabase);
                 }
             }
         }
     }
 
+    private static void CheckCollectionIsExistCloud(MongoManagement.Database database, IMongoDatabase cloudDatabase, MongoManagement.Database.Collection collection)
+    {
+        foreach (var remoteCollectionName in cloudDatabase.ListCollectionNames().ToList())
+        {
+            foreach (var localCollection in database.collections)
+            {
+                var remoteCheck = cloudDatabase.ListCollectionNames().ToList().FirstOrDefault(e => e == localCollection.name);
+                var localCheck = database.collections.FirstOrDefault(e => e.name == remoteCollectionName);
+
+                if (remoteCheck is null)
+                {
+                    cloudDatabase.CreateCollection(localCollection.name);
+                }
+                else if (remoteCheck != null && localCheck != null)
+                {
+                    if (remoteCheck != localCheck.name)
+                    {
+                    }
+                }
+                else
+                {
+                    cloudDatabase.DropCollection(remoteCollectionName);
+                }
+            }
+        }
+    }
+    
+      public static void CreateNewDatabase(string databaseName)
+    {
+        MongoManagement mongo = SerializeMongoDatabases();
+        List<MongoManagement.Database.Collection> newCollection = new List<MongoManagement.Database.Collection>();
+        newCollection.Add(new MongoManagement.Database.Collection() { name = "Deneme", elements = new List<BsonDocument>() });
+        mongo.databases.Add(new MongoManagement.Database()
+        {
+            name = databaseName,
+            collections = newCollection
+        });
+        SaveJson(FileHelper.MongoFilePath.assetsFolder, mongo.ToJson());
+    }
+
     #endregion
+
 }
