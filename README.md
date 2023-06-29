@@ -20,8 +20,16 @@
   <li>Managemenet Database, Collection and items</li>
   <ol>
     <li>Database Management</li>
+    <p>
+        As you can see in the image below, your databases are listed in the left window. When you press any database, collections based on that database are          listed in the middle window. If you click on any collection, all items based on that collection are listed in the right window.
+    </p>
+    <p>
+      Veritabanı ekleme, silme olaylarını anlat.
+    </p>
     <li>Collection Management</li>   
-    <li>Items Management</li>   
+     <p></p>
+    <li>Items Management</li>  
+     <p></p>
   </ol>
   </ul>
   </li>
