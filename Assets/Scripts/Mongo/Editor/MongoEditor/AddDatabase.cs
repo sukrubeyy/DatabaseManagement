@@ -12,7 +12,7 @@ using UnityEngine;
         public static void Initialize()
         { 
             Window = GetWindow<AddDatabase>();
-            Window.titleContent = new GUIContent("TITLE");
+            Window.titleContent = new GUIContent("Create a new database");
             Window.Show();
             _init = true;
         }
