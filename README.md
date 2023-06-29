@@ -35,16 +35,28 @@
       Click "Restart" button.
      </p>
     <li>Items Management</li>  
-     <p>
+    
+  <ul>
+       <li>Create</li>
+          <p>
         If you want to create a new item then click Create a new item button to right window.
         If collection exist any item you have to create item based these items but does not exist any item then you entry input field count and entry 
         property name - property value.
         Click "Restart" button.
-     </p>
-     <ul>
-       <li>Create</li>
+          </p>
        <li>Update</li>
-     </ul>
+         <p>
+        If you want to update item then click "✓" button below of item.
+         </p>
+       <li>Delete</li>
+          <p>
+        If you want to delete item then click "X" button below of item.
+         </p>
+      <li>Reset</li>
+          <p>
+        If you want to reset item then click "<->" button below of item.
+         </p>
+  </ul>
     
   </ol>
   </ul>
