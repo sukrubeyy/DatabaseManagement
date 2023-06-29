@@ -10,21 +10,10 @@ namespace SQLite
     {
         private SQLiteConnection connection;
 
-        public override void Update(params object[] parameters)
-        {
-        }
-
-        public override void Create(params object[] parameters)
-        {
-        }
-
-        public override void Delete(params object[] parameters)
-        {
-        }
-
-        public override void Read(params object[] parameters)
-        {
-        }
+        public override void Update(params object[] parameters) {}
+        public override void Create(params object[] parameters) {}
+        public override void Delete(params object[] parameters) {}
+        public override void Read(params object[] parameters) {}
 
         public void ConnectionDB()
         {

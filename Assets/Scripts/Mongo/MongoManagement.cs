@@ -100,8 +100,8 @@ namespace Mongo
             }
 
             MongoManagement newJson = ToolExtentions.SerializeMongoDatabases();
-            var docs = newJson.databases[0].collections[0].elements[0];
-
+            var docs = _collection.elements[0];
+            Debug.Log(docs);
             BsonDocument addingDocs = new BsonDocument();
             addingDocs.Add("_id", ObjectId.GenerateNewId());
             var newValueIndex = 0;
@@ -153,7 +153,6 @@ namespace Mongo
                 {
                     item2.elements.Remove(targetJsonObject);
                 }
-
             ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
         }
 
