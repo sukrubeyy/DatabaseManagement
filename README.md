@@ -10,6 +10,12 @@
     
   <ul>
       <li>Connection to MongoDB Atlas</li>
+    <ol>
+      <li>Click Database Management Menu</li>
+      <li>Click Database Connection</li>
+      <li>Choose MongoDb</li>
+      <li>Write your MongoDB Atlas connection url and press connect button. If the connection url is not wrong, the databases connected to the mongodb atlas are created as json file.</li>
+    </ol>
   </ul>
   </li>
 </ul>
