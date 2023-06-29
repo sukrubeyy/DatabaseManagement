@@ -16,6 +16,13 @@
       <li>Choose MongoDb</li>
       <li>Write your MongoDB Atlas connection url and press connect button. If the connection url is not wrong, the databases connected to the mongodb atlas are created as json file.</li>
     </ol>
+
+  <li>Managemenet Database, Collection and items</li>
+  <ol>
+    <li>Database Management</li>
+    <li>Collection Management</li>   
+    <li>Items Management</li>   
+  </ol>
   </ul>
   </li>
 </ul>
