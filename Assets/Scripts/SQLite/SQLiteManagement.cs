@@ -33,7 +33,7 @@ public class SQLiteManagement : DatabaseManager
 
         public void ListDBFiles()
         {
-            var dbFiles = Directory.GetFiles(FileHelper.FilePath.SqliteFolderPath, "*.db")
+            var dbFiles = Directory.GetFiles(FileHelper.MongoFilePath.SqliteFolderPath, "*.db")
                 .Select(Path.GetFileName);
 
             foreach (var file in dbFiles)
@@ -44,8 +44,8 @@ public class SQLiteManagement : DatabaseManager
 
         public void CreateDatabase()
         {
-             File.WriteAllBytes(FileHelper.FilePath.SqliteFolderPath+"/newDB.db",new byte[0]);
-             if(File.Exists(FileHelper.FilePath.SqliteFolderPath+"/userInfo.db"))
+             File.WriteAllBytes(FileHelper.MongoFilePath.SqliteFolderPath+"/newDB.db",new byte[0]);
+             if(File.Exists(FileHelper.MongoFilePath.SqliteFolderPath+"/userInfo.db"))
                  Debug.Log("ONEONEONE");
         }
     }

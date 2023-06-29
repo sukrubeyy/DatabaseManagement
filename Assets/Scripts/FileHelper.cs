@@ -12,5 +12,6 @@ using UnityEngine;
         public static class MongoFilePath
         {
             public static string mongoFolderPath = Path.Combine(Application.dataPath,ResourcesName.mongoFileName);
+            public static string SqliteFolderPath = Application.dataPath + "/Scripts/SQLite/Databases";
         }
     }
