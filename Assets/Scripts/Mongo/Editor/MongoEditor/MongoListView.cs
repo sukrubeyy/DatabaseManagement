@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mongo;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,8 +16,7 @@ public class MongoListView : EditorWindow
     private MongoManagement _mongoManagement;
     private MongoManagement.Database.Collection selectedCollection;
     private MongoManagement.Database selectedDatabase;
-    private List<string> collectionData;
-    Vector2 scrollPosition;
+    private Vector2 scrollPosition;
     private List<string> elements;
     private Dictionary<string, List<string>> PreviousTextInput;
     [MenuItem("Database Management/MongoList Editor", priority = 2)]
@@ -156,7 +153,7 @@ public class MongoListView : EditorWindow
                     var cacheDatabase = new List<MongoManagement.Database>(_mongoManagement.databases);
                     cacheDatabase.Remove(database);
                     _mongoManagement.databases = cacheDatabase;
-                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, _mongoManagement.ToJson());
+                    ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, _mongoManagement.ToJson());
                     PrepareData();
                 }
             }
@@ -175,7 +172,6 @@ public class MongoListView : EditorWindow
         if (GUILayout.Button("Create a new collection"))
         {
             AddCollection.Initialize(selectedDatabase);
-            //TODO: CREATE A COLLECTION
         }
 
         GUILayout.Space(20f);
@@ -197,8 +193,7 @@ public class MongoListView : EditorWindow
                     var cacheCollection = new List<MongoManagement.Database.Collection>(selectedDatabase.collections);
                     cacheCollection.Remove(collection);
                     selectedDatabase.collections = cacheCollection;
-                    //selectedDatabase.collections.Remove(collection);
-                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, _mongoManagement.ToJson());
+                    ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, _mongoManagement.ToJson());
                     PrepareData();
                 }
             }
@@ -246,10 +241,8 @@ public class MongoListView : EditorWindow
                 foreach (var item in elements)
                     if (item != objectID)
                         _mongoManagement.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
-                //_mongoManagement.Update(selectedDatabase, selectedCollection, objectID, previousElementsValue);
 
 
-                //PrepareData();
                 GUI.FocusControl(null);
             }
 
@@ -264,7 +257,6 @@ public class MongoListView : EditorWindow
             if (GUILayout.Button("X", GUILayout.Width(30), GUILayout.Height(30)))
             {
                 var objectID = collection["_id"].ToString();
-                //_mongoManagement.Delete(selectedDatabase, selectedCollection, objectID);
                 _mongoManagement.Delete(selectedDatabase, selectedCollection, objectID);
                 PrepareData();
             }
@@ -281,10 +273,6 @@ public class MongoListView : EditorWindow
         GUILayout.EndArea();
 
         #endregion
-    }
-
-    private void DeleteCollectionItem(MongoManagement.Database.Collection collection)
-    {
     }
 
     private void DrawHorizontalLine(float xPos, float height) => EditorGUI.DrawRect(new Rect(xPos, 30, height, position.height), Color.black);

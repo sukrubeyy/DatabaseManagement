@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mongo;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.IdGenerators;
 using UnityEditor;
 using UnityEngine;
 using static Mongo.MongoManagement;
@@ -167,7 +165,7 @@ public class AddCollectionElement : EditorWindow
                     newDoc.Add(propNameList[i], propValueList[i]);
                 mongoDaatabases.databases.FirstOrDefault(e => e == selectedDatabase).
                     collections.FirstOrDefault(e => e == selectedCollection).elements.Add(newDoc);
-                ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, mongoDaatabases.ToJson());
+                ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, mongoDaatabases.ToJson());
                 Window.Close();
             }
             

@@ -1,12 +1,8 @@
-using System.Data;
+using System.IO;
+using System.Linq;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
-
-
-
-namespace SQLite
-{
-    public class SQLiteManagement : DatabaseManager
+public class SQLiteManagement : DatabaseManager
     {
         private SQLiteConnection connection;
 
@@ -17,7 +13,7 @@ namespace SQLite
 
         public void ConnectionDB()
         {
-            string databasePath = Application.dataPath + "/SQLite/userInfo.db";
+            string databasePath = Application.dataPath + "/SQLite/Databases/userInfo.db";
             string createTableQuery = "CREATE TABLE IF NOT EXISTS Person (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER);";
             connection = new SQLiteConnection(databasePath);
             connection.Execute(createTableQuery);
@@ -30,15 +26,27 @@ namespace SQLite
                 name = "memoli",
                 age = 31
             };
-            string databasePath = Application.dataPath + "/SQLite/userInfo.db";
+            string databasePath = Application.dataPath + "/SQLite/Databases/userInfo.db";
             connection = new SQLiteConnection(databasePath);
             connection.Insert(person);
         }
 
+        public void ListDBFiles()
+        {
+            var dbFiles = Directory.GetFiles(FileHelper.FilePath.SqliteFolderPath, "*.db")
+                .Select(Path.GetFileName);
+
+            foreach (var file in dbFiles)
+            {
+                Debug.Log(file);
+            }
+        }
+
         public void CreateDatabase()
         {
-            
-            
+             File.WriteAllBytes(FileHelper.FilePath.SqliteFolderPath+"/newDB.db",new byte[0]);
+             if(File.Exists(FileHelper.FilePath.SqliteFolderPath+"/userInfo.db"))
+                 Debug.Log("ONEONEONE");
         }
     }
 
@@ -47,4 +55,3 @@ namespace SQLite
         public string name { get; set; }
         public int age { get; set; }
     }
-}

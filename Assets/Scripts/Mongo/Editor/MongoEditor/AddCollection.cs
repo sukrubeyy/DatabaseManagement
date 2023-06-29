@@ -1,17 +1,13 @@
-﻿using System;
-using Mongo;
+﻿using Mongo;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 public class AddCollection : EditorWindow
 {
-    public static MongoManagement.Database selectedDatabase;
-    public static AddCollection Window;
+    private static MongoManagement.Database selectedDatabase;
+    private static AddCollection Window;
     private static MongoManagement mongoDatabases;
     private static bool _init;
-    private SerializedObject so;
-    private SerializedProperty soCollectionName;
     private string collectionName;
 
     public static void Initialize(MongoManagement.Database _database)
@@ -23,11 +19,6 @@ public class AddCollection : EditorWindow
         _init = true;
     }
 
-    private void OnEnable()
-    {
-        so = new SerializedObject(this);
-        soCollectionName = so.FindProperty("collectionName");
-    }
 
     private void OnFocus()
     {

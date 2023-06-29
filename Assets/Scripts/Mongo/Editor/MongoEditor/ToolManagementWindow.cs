@@ -1,5 +1,4 @@
 using System;
-using SQLite;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,7 +76,7 @@ public class ToolManagementWindow : EditorWindow
     private void SQLiteUI()
     {
         GUILayout.Space(10);
-        EditorGUILayout.HelpBox("Selamlar Ben SQLite", MessageType.Info);
+        EditorGUILayout.HelpBox("Hi I'm SQLite", MessageType.Info);
         if (GUILayout.Button("Connection"))
         {
             SQLiteManagement sqLiteManagement = new SQLiteManagement();
@@ -92,7 +91,9 @@ public class ToolManagementWindow : EditorWindow
 
         if (GUILayout.Button("Create Database"))
         {
-            
+            SQLiteManagement sqLiteManagement = new SQLiteManagement();
+            //sqLiteManagement.ListDBFiles();
+            sqLiteManagement.CreateDatabase();
         }
     }
 }
