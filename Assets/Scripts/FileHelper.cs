@@ -6,7 +6,6 @@ using UnityEngine;
         public static class ResourcesName
         {
             public static string mongoFileName = "MongoData.json";
-            public static string sqLiteFileName = "SqlLite.json";
         }
 
         public static class MongoFilePath
