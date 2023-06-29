@@ -156,7 +156,7 @@ public class MongoListView : EditorWindow
                     var cacheDatabase = new List<MongoManagement.Database>(_mongoManagement.databases);
                     cacheDatabase.Remove(database);
                     _mongoManagement.databases = cacheDatabase;
-                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, _mongoManagement.ToJson());
+                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, _mongoManagement.ToJson());
                     PrepareData();
                 }
             }
@@ -198,7 +198,7 @@ public class MongoListView : EditorWindow
                     cacheCollection.Remove(collection);
                     selectedDatabase.collections = cacheCollection;
                     //selectedDatabase.collections.Remove(collection);
-                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, _mongoManagement.ToJson());
+                    ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, _mongoManagement.ToJson());
                     PrepareData();
                 }
             }

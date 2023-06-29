@@ -80,7 +80,7 @@ namespace Mongo
                 //item2Count++;
             }
 
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, newJson.ToJson());
         }
 
         public override void Create(params object[] parameters)
@@ -125,7 +125,7 @@ namespace Mongo
                 }
             }
 
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, newJson.ToJson());
         }
 
         public override void Delete(params object[] parameters)
@@ -153,7 +153,7 @@ namespace Mongo
                 {
                     item2.elements.Remove(targetJsonObject);
                 }
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, newJson.ToJson());
         }
 
         public override void Read(params object[] parameters){}

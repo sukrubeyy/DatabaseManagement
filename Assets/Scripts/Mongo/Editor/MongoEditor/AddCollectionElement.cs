@@ -167,7 +167,7 @@ public class AddCollectionElement : EditorWindow
                     newDoc.Add(propNameList[i], propValueList[i]);
                 mongoDaatabases.databases.FirstOrDefault(e => e == selectedDatabase).
                     collections.FirstOrDefault(e => e == selectedCollection).elements.Add(newDoc);
-                ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, mongoDaatabases.ToJson());
+                ToolExtentions.SaveJson(FileHelper.MongoFilePath.mongoFolderPath, mongoDaatabases.ToJson());
                 Window.Close();
             }
             

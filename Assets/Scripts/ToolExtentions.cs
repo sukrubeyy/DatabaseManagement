@@ -99,7 +99,7 @@ public static class ToolExtentions
     {
         MongoManagement mongo = SerializeMongoDatabases();
         mongo.databases.FirstOrDefault(e => e.name == databaseName).collections.Add(new MongoManagement.Database.Collection() { name = collectionName, elements = new List<BsonDocument>() });
-        SaveJson(FileHelper.MongoFilePath.assetsFolder, mongo.ToJson());
+        SaveJson(FileHelper.MongoFilePath.mongoFolderPath, mongo.ToJson());
     }
 
     #endregion
@@ -108,7 +108,7 @@ public static class ToolExtentions
 
     public static MongoManagement SerializeMongoDatabases()
     {
-        string filePath = FileHelper.MongoFilePath.assetsFolder;
+        string filePath = FileHelper.MongoFilePath.mongoFolderPath;
         var jsonContent = File.ReadAllText(filePath);
         if (File.Exists(filePath))
         {
@@ -124,7 +124,7 @@ public static class ToolExtentions
 
     public static string GetJsonFile(string jsonName)
     {
-        string filePath = FileHelper.MongoFilePath.assetsFolder;
+        string filePath = FileHelper.MongoFilePath.mongoFolderPath;
         if (File.Exists(filePath))
         {
             var jsonContent = File.ReadAllText(filePath);
@@ -137,7 +137,7 @@ public static class ToolExtentions
         }
     }
 
-    public static bool IsExistJson(string jsonName) => File.Exists(FileHelper.MongoFilePath.assetsFolder);
+    public static bool IsExistJson(string jsonName) => File.Exists(FileHelper.MongoFilePath.mongoFolderPath);
 
     public static void CreateCloudDataToJson(string connectionUrl)
     {
@@ -170,7 +170,7 @@ public static class ToolExtentions
 
         mongoManagement.databases = myDatabases;
         string json = mongoManagement.ToJson();
-        System.IO.File.WriteAllText(FileHelper.MongoFilePath.assetsFolder, json);
+        System.IO.File.WriteAllText(FileHelper.MongoFilePath.mongoFolderPath, json);
     }
 
     public static void SendJsonToCloud()
@@ -287,7 +287,7 @@ public static class ToolExtentions
             name = databaseName,
             collections = newCollection
         });
-        SaveJson(FileHelper.MongoFilePath.assetsFolder, mongo.ToJson());
+        SaveJson(FileHelper.MongoFilePath.mongoFolderPath, mongo.ToJson());
     }
 
     #endregion
