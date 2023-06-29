@@ -80,7 +80,7 @@ namespace Mongo
                 //item2Count++;
             }
 
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, newJson.ToJson());
         }
 
         public override void Create(params object[] parameters)
@@ -101,7 +101,6 @@ namespace Mongo
 
             MongoManagement newJson = ToolExtentions.SerializeMongoDatabases();
             var docs = _collection.elements[0];
-            Debug.Log(docs);
             BsonDocument addingDocs = new BsonDocument();
             addingDocs.Add("_id", ObjectId.GenerateNewId());
             var newValueIndex = 0;
@@ -125,7 +124,7 @@ namespace Mongo
                 }
             }
 
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, newJson.ToJson());
         }
 
         public override void Delete(params object[] parameters)
@@ -153,7 +152,7 @@ namespace Mongo
                 {
                     item2.elements.Remove(targetJsonObject);
                 }
-            ToolExtentions.SaveJson(FileHelper.MongoFilePath.assetsFolder, newJson.ToJson());
+            ToolExtentions.SaveJson(FileHelper.FilePath.SqliteFolderPath, newJson.ToJson());
         }
 
         public override void Read(params object[] parameters){}
