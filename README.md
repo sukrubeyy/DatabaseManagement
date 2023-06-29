@@ -16,10 +16,13 @@
       <li>Choose MongoDb</li>
       <li>Write your MongoDB Atlas connection url and press connect button. If the connection url is not wrong, the databases connected to the mongodb atlas are created as json file.</li>
     </ol>
-     <img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/ToolMenuItem.PNG"></img>
-     <img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/connectionMongo.PNG"></img>
-     <img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/toolManagementWindow.PNG"></img>
-     <img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/MongoListWindow.png"></img>
+    <ul>
+      <li><img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/ToolMenuItem.PNG"></img></li>
+      <li><img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/connectionMongo.PNG"></img></li>
+      <li><img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/toolManagementWindow.PNG"></img></li>
+      <li><img src="https://github.com/sukrubeyy/DatabaseManagement/blob/main/images/MongoListWindow.png"></img></li>
+    </ul>
+         
   <li>Managemenet Database, Collection and items</li>
   <ol>
     <li>Database Management</li>
