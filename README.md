@@ -3,10 +3,10 @@
 <ul>
   <li>
     <h2>MongoDB</h2>
+     <h3>Description</h3>
     <ul>
       <li>Connection to MongoDB Atlas</li>
     </ul>
-    <p>MongoDB description</p>
   </li>
 </ul>
 
