@@ -41,10 +41,10 @@
         property name - property value.
         Click "Restart" button.
      </p>
-     <ol>
+     <ul>
        <li>Create</li>
        <li>Update</li>
-     </ol>
+     </ul>
     
   </ol>
   </ul>
