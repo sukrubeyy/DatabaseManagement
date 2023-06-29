@@ -16,7 +16,7 @@ public class ToolManagementWindow : EditorWindow
     private SerializedProperty soConnectionUrl;
 
 
-    [MenuItem("Database Management/Database Connection",priority = 1)]
+    [MenuItem("Database Management/Database Connection", priority = 1)]
     public static void ShowWindow()
     {
         isInit = true;
@@ -76,6 +76,24 @@ public class ToolManagementWindow : EditorWindow
     private void SQLiteUI()
     {
         GUILayout.Space(10);
-        EditorGUILayout.HelpBox("Selamlar Ben SQLite",MessageType.Info);
+        EditorGUILayout.HelpBox("Hi I'm SQLite", MessageType.Info);
+        if (GUILayout.Button("Connection"))
+        {
+            SQLiteManagement sqLiteManagement = new SQLiteManagement();
+            sqLiteManagement.ConnectionDB();
+        }
+
+        if (GUILayout.Button("Add Item"))
+        {
+            SQLiteManagement sqLiteManagement = new SQLiteManagement();
+            sqLiteManagement.AddItem();
+        }
+
+        if (GUILayout.Button("Create Database"))
+        {
+            SQLiteManagement sqLiteManagement = new SQLiteManagement();
+            //sqLiteManagement.ListDBFiles();
+            sqLiteManagement.CreateDatabase();
+        }
     }
 }
