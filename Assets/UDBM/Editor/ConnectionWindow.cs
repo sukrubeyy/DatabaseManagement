@@ -6,8 +6,6 @@ public class ConnectionWindow : EditorWindow
 {
     public static ConnectionWindow window;
     private static DatabaseType dbType = DatabaseType.None;
-
-    // Ortak alanlar
     private TextField hostField;
     private IntegerField portField;
     private TextField usernameField;
@@ -70,7 +68,7 @@ public class ConnectionWindow : EditorWindow
                 AssetDatabase.CreateFolder("Assets/UDBM", "Informations");
             }
 
-            string assetPath = $"{folderPath}/{dbType}_Info.asset";
+            string assetPath = $"{folderPath}/DbInfo.asset";
 
             DatabaseInformation _information = CreateInstance<DatabaseInformation>();
 

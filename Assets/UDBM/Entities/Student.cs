@@ -3,7 +3,9 @@
 public class Student
 {
     [Column(primary: true, generated: true)]
-    public string Id { get; set; }
+    public int Id { get; set; }
+    [Column]
     public string name { get; set; }
+    [Column]
     public int age { get; set; }
 }

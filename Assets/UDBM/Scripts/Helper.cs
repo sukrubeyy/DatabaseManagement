@@ -1,3 +1,6 @@
+using System.Text;
+using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
 public class Helper
@@ -11,8 +14,21 @@ public class Helper
         return element;
     }
 
-    public void CreateDatabaseInformation(string dbtype, string host, string port, string username, string password, string dbName)
+    public static void Migrate(string json)
     {
+        UnityWebRequest request = new UnityWebRequest("http://localhost:3000/migrate", "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
 
+        var operation = request.SendWebRequest();
+        operation.completed += (asyncOp) =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+                Debug.Log("Sent successfully: " + request.downloadHandler.text);
+            else
+                Debug.LogError("Error sending JSON: " + request.error);
+        };
     }
 }

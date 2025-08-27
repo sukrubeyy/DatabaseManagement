@@ -1,6 +1,4 @@
-using System;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 public class MigrationWindow : EditorWindow
@@ -22,15 +20,11 @@ public class MigrationWindow : EditorWindow
 
         migrateButton.clicked += () =>
         {
-            var entities = AttributeReader.FindAllEntities();
-            foreach (Type entity in entities)
-            {
-                Debug.Log($"{entity.Name}");
-            }
+            var dbConfigSO = AssetDatabase.LoadAssetAtPath<DatabaseInformation>("Assets/UDBM/Informations/DbInfo.asset");
+            string json = AttributeReader.BuildJson(dbConfigSO);
+            Helper.Migrate(json);
         };
-
         root.Add(migrateButton);
-
     }
 
 }
