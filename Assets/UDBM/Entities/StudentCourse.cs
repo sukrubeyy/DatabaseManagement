@@ -13,6 +13,5 @@ public class StudentCourse
     [Relation("many-to-one", "Course", "courseId")]
     [Column(false, false)]
     public int courseId { get; set; }
-
 }
 

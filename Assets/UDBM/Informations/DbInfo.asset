@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4262453eac759c549ad7ed6df8a76572, type: 3}
-  m_Name: PostgreSql_Info
+  m_Name: DbInfo
   m_EditorClassIdentifier: 
   dbType: 2
   host: localhost
