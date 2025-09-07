@@ -57,3 +57,4 @@ Logs/AssetImportWorker1.log
 # End of https://www.gitignore.io/api/unity
 Logs/shadercompiler-AssetImportWorker1-0.log
 Logs/shadercompiler-UnityShaderCompiler.exe-0.log
+Logs/shadercompiler-AssetImportWorker0-0.log
