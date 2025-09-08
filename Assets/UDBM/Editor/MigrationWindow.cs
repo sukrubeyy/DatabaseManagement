@@ -15,7 +15,7 @@ public class MigrationWindow : EditorWindow
     {
         VisualElement root = rootVisualElement;
 
-        var migrateButton = Helper.Create<Button>();
+        var migrateButton = CustomElement.Create<Button>();
         migrateButton.text = "Migrate";
 
         migrateButton.clicked += () =>

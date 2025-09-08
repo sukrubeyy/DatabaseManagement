@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[Entity]
+[Entity()]
 public class StudentCourse
 {
     [Column(primary: true, generated: true)]
