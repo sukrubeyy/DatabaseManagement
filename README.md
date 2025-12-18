@@ -1,119 +1,78 @@
 # Database Management Tool For Unity (UDBM v2)
 
-<ul>
+<details>
+<summary>🌐 Overview / Genel Bakış</summary>
 
-<li>
-  <h2>Overview</h2>
-  <p>
-    <strong>Unity Database Management Tool (UDBM vNext)</strong> is a database design and management tool developed for Unity.
-    It allows developers to visually design database structures inside Unity Editor and generate database schemas using
-    custom entity definitions and migrations.
-  </p>
-</li>
+[Click here for full Overview](https://www.youtube.com/watch?v=4d2z6tAy3t0)
 
-<li>
-  <h2>Genel Bakış (TR)</h2>
-  <p>
-    <strong>Unity Database Management Tool (UDBM vNext)</strong>, Unity Editor içerisinde veritabanı yapılarını
-    tasarlamanızı, entity’ler oluşturmanızı ve migration işlemleriyle tablolarınızı üretmenizi sağlayan bir araçtır.
-    Sistem, NestJS tabanlı asenkron bir API ile desteklenmektedir.
-  </p>
-</li>
+</details>
 
-<li>
-  <h2>Core Architecture</h2>
-  <ul>
-    <li>Asynchronous backend architecture powered by <strong>NestJS API</strong></li>
-    <li>Modern and flexible UI built with <strong>Unity UI Toolkit</strong></li>
-    <li>Visual database diagrams using <strong>GraphView</strong></li>
-    <li>Custom Entity & Attribute based database design</li>
-    <li>Editor-based migration system</li>
-  </ul>
-</li>
+<details>
+<summary>🇹🇷 Türkçe</summary>
 
-<li>
-  <h2>Temel Mimari (TR)</h2>
-  <ul>
-    <li><strong>NestJS</strong> tabanlı asenkron API mimarisi</li>
-    <li><strong>UI Toolkit</strong> ile geliştirilen esnek ve modern arayüz</li>
-    <li><strong>GraphView</strong> üzerinden görsel veritabanı diyagramları</li>
-    <li>Custom Entity & Attribute tabanlı veritabanı tasarımı</li>
-    <li>Unity Editor üzerinden migration sistemi</li>
-  </ul>
-</li>
+### Genel Bakış
+Unity Database Management Tool (UDBM v2), Unity Editor içerisinde veritabanı yapılarını tasarlamanızı, entity’ler oluşturmanızı ve migration işlemleriyle tablolarınızı üretmenizi sağlayan bir araçtır. Sistem, NestJS tabanlı asenkron bir API ile desteklenmektedir.
 
-<li>
-  <h2>Entity & Migration System</h2>
-  <p>
-    Developers can create entity classes under the <strong>UDBM/Entities</strong> directory.
-    Using custom attributes, database tables, columns, and relationships can be defined directly in code.
-    These definitions can then be migrated through the Unity Editor to generate database schemas.
-  </p>
-</li>
+### Temel Özellikler
+- NestJS tabanlı asenkron API
+- UI Toolkit ile modern ve esnek arayüz
+- GraphView üzerinden görsel veritabanı diyagramları
+- Custom Entity & Attribute tabanlı veritabanı tasarımı
+- Unity Editor üzerinden migration sistemi
 
-<li>
-  <h2>Entity & Migration Sistemi (TR)</h2>
-  <p>
-    Geliştiriciler <strong>UDBM/Entities</strong> dizini altında entity yapılarını oluşturabilir.
-    Tasarlanan custom attribute’ler sayesinde tablolar, kolonlar ve ilişkiler kod üzerinden tanımlanır.
-    Unity Editor içinden migration işlemi çalıştırılarak veritabanı yapısı otomatik olarak oluşturulur.
-  </p>
-</li>
+### Entity & Migration Sistemi
+- `UDBM/Entities` dizini altında entity’ler oluşturabilirsiniz
+- Custom attribute’ler ile tablolar, kolonlar ve ilişkiler tanımlanır
+- Editor üzerinden migration ile veritabanı yapısı otomatik oluşturulur
 
-<li>
-  <h2>Supported Databases</h2>
-  <ul>
-    <li>SQLite</li>
-    <li>MongoDB</li>
-    <li>MySQL</li>
-    <li>Microsoft SQL Server (MSSQL)</li>
-    <li>PostgreSQL</li>
-  </ul>
-</li>
+### Desteklenen Veritabanları
+- SQLite  
+- MongoDB  
+- MySQL  
+- MSSQL  
+- PostgreSQL  
 
-<li>
-  <h2>Desteklenen Veritabanları (TR)</h2>
-  <ul>
-    <li>SQLite</li>
-    <li>MongoDB</li>
-    <li>MySQL</li>
-    <li>Microsoft SQL Server (MSSQL)</li>
-    <li>PostgreSQL</li>
-  </ul>
-</li>
+### Sürüm Notları
+- Önceki sürümde yalnızca SQLite ve MongoDB vardı
+- Bu sürüm ile MySQL, MSSQL ve PostgreSQL desteği eklendi
 
-<li>
-  <h2>Version Notes</h2>
-  <p>
-    Previous versions supported only SQLite and MongoDB.
-    In this version, MySQL, MSSQL, and PostgreSQL support has been added.
-  </p>
-</li>
+### Geliştirme Durumu
+- API henüz yayınlanmamıştır, tool tam olarak çalışır durumda değildir
+- Hem API hem Unity Editor tool’u aktif olarak geliştirilmekte
 
-<li>
-  <h2>Sürüm Notları (TR)</h2>
-  <p>
-    Önceki sürümde yalnızca SQLite ve MongoDB desteği bulunmaktaydı.
-    Bu sürüm ile birlikte MySQL, MSSQL ve PostgreSQL destekleri eklenmiştir.
-  </p>
-</li>
+</details>
 
-<li>
-  <h2>Development Status</h2>
-  <p>
-    The NestJS API is currently under development and has not been published yet.
-    Therefore, the tool is not fully functional at the moment.
-    Both the API and Unity Editor tool are actively being developed.
-  </p>
-</li>
+<details>
+<summary>🇬🇧 English</summary>
 
-<li>
-  <h2>Geliştirme Durumu (TR)</h2>
-  <p>
-    NestJS API henüz yayınlanmamıştır ve geliştirme aşamasındadır.
-    Bu nedenle tool şu anda tam olarak çalışır durumda değildir.
-    Hem API hem de Unity Editor tool’u aktif olarak geliştirilmektedir.
-  </p>
-</li>
+### Overview
+Unity Database Management Tool (UDBM v2) is a Unity Editor tool to visually design database structures, create entities, and generate tables using migrations. The system is powered by an asynchronous NestJS API.
 
-</ul>
+### Key Features
+- Asynchronous API powered by NestJS
+- Modern and flexible UI with Unity UI Toolkit
+- Visual database diagrams with GraphView
+- Custom Entity & Attribute based database design
+- Migration system via Unity Editor
+
+### Entity & Migration System
+- Create entities under `UDBM/Entities` directory
+- Define tables, columns, and relationships with custom attributes
+- Generate database schemas easily using editor migration
+
+### Supported Databases
+- SQLite  
+- MongoDB  
+- MySQL  
+- MSSQL  
+- PostgreSQL  
+
+### Version Notes
+- Previous versions supported only SQLite and MongoDB
+- MySQL, MSSQL, and PostgreSQL support added in this version
+
+### Development Status
+- API is under development, tool is not fully functional yet
+- Both API and Unity Editor tool are actively being developed
+
+</details>
