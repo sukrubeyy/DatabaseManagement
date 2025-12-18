@@ -17,7 +17,6 @@ Unity Database Management Tool (UDBM v2), Unity Editor içerisinde veritabanı y
 - NestJS tabanlı asenkron API
 - UI Toolkit ile modern ve esnek arayüz
 - GraphView üzerinden görsel veritabanı diyagramları
-- Custom Entity & Attribute tabanlı veritabanı tasarımı
 - Unity Editor üzerinden migration sistemi
 
 ### Entity & Migration Sistemi
@@ -26,8 +25,6 @@ Unity Database Management Tool (UDBM v2), Unity Editor içerisinde veritabanı y
 - Editor üzerinden migration ile veritabanı yapısı otomatik oluşturulur
 
 ### Desteklenen Veritabanları
-- SQLite  
-- MongoDB  
 - MySQL  
 - MSSQL  
 - PostgreSQL  
@@ -52,7 +49,6 @@ Unity Database Management Tool (UDBM v2) is a Unity Editor tool to visually desi
 - Asynchronous API powered by NestJS
 - Modern and flexible UI with Unity UI Toolkit
 - Visual database diagrams with GraphView
-- Custom Entity & Attribute based database design
 - Migration system via Unity Editor
 
 ### Entity & Migration System
@@ -60,9 +56,7 @@ Unity Database Management Tool (UDBM v2) is a Unity Editor tool to visually desi
 - Define tables, columns, and relationships with custom attributes
 - Generate database schemas easily using editor migration
 
-### Supported Databases
-- SQLite  
-- MongoDB  
+### Supported Databases 
 - MySQL  
 - MSSQL  
 - PostgreSQL  
